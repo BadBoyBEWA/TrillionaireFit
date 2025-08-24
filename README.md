@@ -1,2 +1,2 @@
 # TrillionaireFit
-An E-commerce Website faefetch standard
+An E-commerce Website farfetch standard
