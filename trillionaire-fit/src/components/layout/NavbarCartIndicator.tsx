@@ -1,14 +1,19 @@
 "use client";
 
-import Link from 'next/link';
 import { useCart } from '@/components/cart/CartProvider';
+import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 
 export function CartIndicator() {
   const { state } = useCart();
+  const { navigate } = useNavigationWithLoading();
   const count = state.items.reduce((n, i) => n + i.quantity, 0);
+  
   return (
-    <Link className="hover:underline" href="/cart">
+    <button 
+      onClick={() => navigate('/cart')} 
+      className="hover:underline"
+    >
       Cart{count > 0 ? ` (${count})` : ''}
-    </Link>
+    </button>
   );
 }

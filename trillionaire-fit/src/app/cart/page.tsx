@@ -1,10 +1,11 @@
 "use client";
 
-import Link from 'next/link';
 import { useCart } from '@/components/cart/CartProvider';
+import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 
 export default function CartPage() {
   const { state, subtotal, removeFromCart, updateQuantity, clearCart } = useCart();
+  const { navigate } = useNavigationWithLoading();
   const isEmpty = state.items.length === 0;
 
   return (
@@ -48,9 +49,12 @@ export default function CartPage() {
                 <span>Subtotal</span>
                 <span className="font-medium">$ {subtotal.toFixed(2)}</span>
               </div>
-              <Link href="/checkout" className="btn-primary mt-4 w-full text-center">
+              <button 
+                onClick={() => navigate('/checkout')} 
+                className="btn-primary mt-4 w-full text-center"
+              >
                 Checkout
-              </Link>
+              </button>
             </div>
           </aside>
         </div>
