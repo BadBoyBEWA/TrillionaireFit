@@ -10,7 +10,7 @@ import { Marquee } from '@/components/layout/Marquee';
 
 export const metadata: Metadata = {
   title: publicConfig.siteName,
-  description: 'Trillionaire Fit — Luxury fashion marketplace with a Farfetch-inspired UI.',
+  description: 'Trillionaire Fit — Luxury fashion marketplace.',
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
