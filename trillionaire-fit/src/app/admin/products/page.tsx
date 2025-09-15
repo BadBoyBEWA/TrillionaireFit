@@ -42,7 +42,7 @@ export default function AdminProductsPage() {
   // Check if user is admin
   useEffect(() => {
     if (user && user.role !== 'admin') {
-      router.push('/unauthorized');
+      router.push('/login');
     }
   }, [user, router]);
 
