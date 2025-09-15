@@ -19,6 +19,9 @@ pnpm-debug.log*
 .env.development.local
 .env.test.local
 .env.production.local
+.TODO.md
+.PAYSTACK_SETUP.md
+.SECURITY.md
 
 # Local secret config
 config/secrets.ts

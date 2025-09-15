@@ -7,6 +7,8 @@ import { CartProvider } from '@/components/cart/CartProvider';
 import { LoadingProvider } from '@/contexts/LoadingContext';
 import { GlobalLoadingScreen } from '@/components/ui/GlobalLoadingScreen';
 import { Marquee } from '@/components/layout/Marquee';
+import { AuthProvider } from "@/context/AuthContext";
+import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 
 export const metadata: Metadata = {
   title: publicConfig.siteName,
@@ -17,15 +19,21 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <body className="min-h-screen bg-white text-zinc-900 antialiased">
-        <LoadingProvider>
-          <CartProvider>
-            <GlobalLoadingScreen />
-            <Navbar />
-            <Marquee text="Store coming soon" />
-            <main className="container-responsive py-8">{children}</main>
-            <Footer />
-          </CartProvider>
-        </LoadingProvider>
+        <ErrorBoundary>
+          <AuthProvider>
+            <LoadingProvider>
+              <CartProvider>
+                <GlobalLoadingScreen />
+                <Navbar />
+                <Marquee text="Store coming soon" />
+                <main className="container-responsive py-8">
+                  {children}
+                </main>
+                <Footer />
+              </CartProvider>
+            </LoadingProvider>
+          </AuthProvider>
+        </ErrorBoundary>
       </body>
     </html>
   );
