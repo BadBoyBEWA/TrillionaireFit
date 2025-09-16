@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
       currency: 'NGN',
       callback_url: callbackUrl,
       metadata: {
-        orderId: order._id.toString(),
+        orderId: String(order._id),
         orderNumber: order.orderNumber,
         userId: user.userId
       }

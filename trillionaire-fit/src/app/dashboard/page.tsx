@@ -44,7 +44,7 @@ interface UserProfile {
 }
 
 interface Address {
-  _id: string;
+  _id?: string;
   firstName: string;
   lastName: string;
   email: string;
@@ -258,7 +258,7 @@ export default function Dashboard() {
         {/* Header */}
         <div className="mb-8">
           <h1 className="text-2xl sm:text-3xl font-bold text-black">
-            Welcome back, {profile?.firstName || user.firstName || 'User'}!
+            Welcome back, {profile?.firstName || 'User'}!
           </h1>
           <p className="text-gray-600 mt-2">Manage your account and track your orders</p>
         </div>
@@ -528,7 +528,7 @@ export default function Dashboard() {
                             Edit
                           </button>
                           <button
-                            onClick={() => handleAddressDelete(address._id)}
+                            onClick={() => address._id && handleAddressDelete(address._id)}
                             className="text-red-600 hover:text-red-800 text-sm font-medium"
                           >
                             Delete

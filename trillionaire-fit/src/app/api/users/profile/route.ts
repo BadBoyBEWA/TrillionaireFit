@@ -61,8 +61,17 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const validatedData = updateProfileSchema.parse(body);
 
+    // Get current user data
+    const currentUser = await User.findById(user.userId).select('email').lean();
+    if (!currentUser) {
+      return NextResponse.json(
+        { error: 'User not found' },
+        { status: 404 }
+      );
+    }
+
     // Check if email is already taken by another user
-    if (validatedData.email !== user.email) {
+    if (validatedData.email !== currentUser.email) {
       const existingUser = await User.findOne({ 
         email: validatedData.email,
         _id: { $ne: user.userId }
@@ -107,7 +116,7 @@ export async function PUT(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

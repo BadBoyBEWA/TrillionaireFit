@@ -74,7 +74,7 @@ function CheckoutContent() {
     try {
       // Create order
       const orderItems: OrderItem[] = state.items.map(item => ({
-        productId: item.product._id || item.product.id,
+        productId: item.product._id || item.product.id || '',
         quantity: item.quantity,
         price: item.product.price
       }));

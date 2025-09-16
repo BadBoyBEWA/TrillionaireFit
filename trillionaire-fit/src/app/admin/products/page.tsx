@@ -6,20 +6,49 @@ import { useAuth } from '@/context/AuthContext';
 import ProductForm from '@/components/admin/ProductForm';
 
 interface Product {
-  _id: string;
+  _id?: string;
   name: string;
+  description: string;
   designer: string;
   price: number;
   originalPrice?: number;
   images: string[];
   gender: 'men' | 'women' | 'unisex';
   category: string;
+  subcategory?: string;
+  sizes: string[];
+  colors: string[];
+  materials: string[];
+  tags: string[];
   isActive: boolean;
   isFeatured: boolean;
   isOnSale: boolean;
+  isPreowned: boolean;
+  condition?: 'excellent' | 'very-good' | 'good' | 'fair';
+  stock: {
+    [size: string]: {
+      [color: string]: number;
+    };
+  };
   sku: string;
-  createdAt: string;
-  totalStock: number;
+  weight?: number;
+  dimensions?: {
+    length: number;
+    width: number;
+    height: number;
+  };
+  careInstructions?: string;
+  shippingInfo?: {
+    freeShipping: boolean;
+    estimatedDays: number;
+  };
+  seo: {
+    title?: string;
+    description?: string;
+    keywords?: string[];
+  };
+  createdAt?: string;
+  totalStock?: number;
 }
 
 export default function AdminProductsPage() {
@@ -285,7 +314,7 @@ export default function AdminProductsPage() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex space-x-2">
                         <button
-                          onClick={() => handleToggleStatus(product._id, product.isActive, 'isActive')}
+                          onClick={() => product._id && handleToggleStatus(product._id, product.isActive, 'isActive')}
                           className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
                             product.isActive
                               ? 'bg-green-100 text-green-800'
@@ -315,7 +344,7 @@ export default function AdminProductsPage() {
                           Edit
                         </button>
                         <button
-                          onClick={() => handleDelete(product._id)}
+                          onClick={() => product._id && handleDelete(product._id)}
                           className="text-red-600 hover:text-red-900"
                         >
                           Delete

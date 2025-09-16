@@ -53,7 +53,7 @@ export async function PUT(
     return NextResponse.json({
       message: 'Order updated successfully',
       order: {
-        id: order._id,
+        id: String(order._id),
         orderNumber: order.orderNumber,
         status: order.status,
         trackingNumber: order.trackingNumber,
@@ -66,7 +66,7 @@ export async function PUT(
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

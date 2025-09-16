@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Payment verified successfully',
       order: {
-        id: order._id,
+        id: String(order._id),
         orderNumber: order.orderNumber,
         status: order.status,
         paymentStatus: order.payment.status
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

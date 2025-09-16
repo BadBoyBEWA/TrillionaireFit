@@ -12,7 +12,7 @@ const productSchema = z.object({
   price: z.number().min(0, 'Price must be positive'),
   originalPrice: z.number().min(0, 'Original price must be positive').optional(),
   images: z.array(z.string().url('Invalid image URL')).min(1, 'At least one image is required'),
-  gender: z.enum(['men', 'women', 'unisex'], { required_error: 'Gender is required' }),
+  gender: z.enum(['men', 'women', 'unisex']),
   category: z.string().min(1, 'Category is required').max(50, 'Category too long'),
   subcategory: z.string().max(50, 'Subcategory too long').optional(),
   sizes: z.array(z.string()).min(1, 'At least one size is required'),
@@ -160,15 +160,15 @@ export async function GET(request: NextRequest) {
             } else {
               // Plain object structure
               for (const colorStock of Object.values(sizeStock)) {
-                totalStock += colorStock;
+                totalStock += Number(colorStock) || 0;
               }
             }
           }
         } else {
           // Plain object structure
           for (const sizeStock of Object.values(product.stock)) {
-            for (const colorStock of Object.values(sizeStock)) {
-              totalStock += colorStock;
+            for (const colorStock of Object.values(sizeStock as any)) {
+              totalStock += Number(colorStock) || 0;
             }
           }
         }
@@ -192,7 +192,7 @@ export async function GET(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Invalid query parameters', details: error.errors },
+        { error: 'Invalid query parameters', details: error.issues },
         { status: 400 }
       );
     }
@@ -238,7 +238,7 @@ export async function POST(request: NextRequest) {
     console.log('🔄 Stock data received:', { totalStock, stock });
     console.log('📦 Product data after extraction:', JSON.stringify(productData, null, 2));
     
-    let finalStock = {};
+    let finalStock: { [size: string]: { [color: string]: number } } = {};
     
     if (stock && Object.keys(stock).length > 0) {
       // Use the provided stock structure
@@ -284,7 +284,7 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

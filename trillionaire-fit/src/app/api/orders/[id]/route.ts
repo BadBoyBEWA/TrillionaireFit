@@ -27,22 +27,23 @@ export async function GET(
     }
 
     // Transform the order to match frontend expectations
+    const orderData = order as any;
     const transformedOrder = {
-      id: order._id,
-      orderNumber: order.orderNumber,
-      status: order.status,
-      paymentStatus: order.payment?.status || 'pending',
-      total: order.total,
-      estimatedDelivery: order.estimatedDelivery,
-      items: order.items.map(item => ({
+      id: String(orderData._id),
+      orderNumber: orderData.orderNumber,
+      status: orderData.status,
+      paymentStatus: orderData.payment?.status || 'pending',
+      total: orderData.total,
+      estimatedDelivery: orderData.estimatedDelivery,
+      items: orderData.items.map((item: any) => ({
         name: item.name,
         designer: item.designer,
         quantity: item.quantity,
         price: item.price,
         image: item.image
       })),
-      shippingAddress: order.shippingAddress,
-      payment: order.payment
+      shippingAddress: orderData.shippingAddress,
+      payment: orderData.payment
     };
 
     return NextResponse.json({ order: transformedOrder });

@@ -74,15 +74,15 @@ export async function GET(
           } else {
             // Plain object structure
             for (const colorStock of Object.values(sizeStock)) {
-              totalStock += colorStock;
+              totalStock += Number(colorStock) || 0;
             }
           }
         }
       } else {
         // Plain object structure
         for (const sizeStock of Object.values(product.stock)) {
-          for (const colorStock of Object.values(sizeStock)) {
-            totalStock += colorStock;
+          for (const colorStock of Object.values(sizeStock as any)) {
+            totalStock += Number(colorStock) || 0;
           }
         }
       }
@@ -146,11 +146,11 @@ export async function PUT(
     
     if (stock !== undefined) {
       // Use the provided stock structure
-      updateData.stock = stock;
+      (updateData as any).stock = stock;
       console.log('📊 Using provided stock structure for update:', JSON.stringify(stock, null, 2));
     } else if (totalStock !== undefined) {
       // Convert totalStock to stock structure
-      const stockStructure = {};
+      const stockStructure: { [size: string]: { [color: string]: number } } = {};
       if (totalStock > 0) {
         // Use existing sizes/colors or defaults
         const sizes = updateData.sizes || existingProduct.sizes || ['M'];
@@ -159,7 +159,7 @@ export async function PUT(
         const defaultColor = colors[0];
         stockStructure[defaultSize] = { [defaultColor]: totalStock };
       }
-      updateData.stock = stockStructure;
+      (updateData as any).stock = stockStructure;
       console.log('📊 Created stock structure from totalStock for update:', JSON.stringify(stockStructure, null, 2));
     }
 
@@ -180,7 +180,7 @@ export async function PUT(
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

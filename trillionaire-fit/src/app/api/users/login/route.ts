@@ -59,7 +59,7 @@ export async function POST(request: NextRequest) {
 
     // Generate token
     const token = jwt.sign(
-      { userId: user._id.toString(), role: user.role },
+      { userId: String(user._id), role: user.role },
       JWT_SECRET,
       { expiresIn: '7d' }
     );
@@ -68,7 +68,7 @@ export async function POST(request: NextRequest) {
     const response = NextResponse.json({
       message: 'Login successful',
       user: {
-        id: user._id.toString(),
+        id: String(user._id),
         name: user.name,
         email: user.email,
         role: user.role,

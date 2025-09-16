@@ -116,7 +116,7 @@ export async function POST(request: NextRequest) {
 
     // Create order items with current product details
     const orderItems = validatedData.items.map(item => {
-      const product = products.find(p => p._id.toString() === item.productId);
+      const product = products.find(p => String(p._id) === item.productId);
       if (!product) {
         throw new Error('Product not found');
       }
@@ -215,7 +215,7 @@ export async function POST(request: NextRequest) {
 
     // Update product stock (simplified - in production, you'd want more sophisticated inventory management)
     for (const item of orderItems) {
-      const product = products.find(p => p._id.toString() === item.product.toString());
+      const product = products.find(p => String(p._id) === String(item.product));
       if (product && product.stock) {
         // Since we used .lean(), stock is a plain object, not a Map
         // Simple approach: reduce from the first available size/color combination
@@ -241,7 +241,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       message: 'Order created successfully',
       order: {
-        id: order._id,
+        id: String(order._id),
         orderNumber: order.orderNumber,
         total: order.total,
         status: order.status,
@@ -254,7 +254,7 @@ export async function POST(request: NextRequest) {
     
     if (error instanceof z.ZodError) {
       return NextResponse.json(
-        { error: 'Validation error', details: error.errors },
+        { error: 'Validation error', details: error.issues },
         { status: 400 }
       );
     }

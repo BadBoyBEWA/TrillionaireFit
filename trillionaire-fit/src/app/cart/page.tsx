@@ -64,10 +64,10 @@ export default function CartPage() {
                       type="number"
                       min={1}
                       value={quantity}
-                      onChange={(e) => updateQuantity(product.id, Number(e.target.value))}
+                      onChange={(e) => updateQuantity(product.id || product._id || '', Number(e.target.value))}
                       className="w-20 rounded-lg border border-zinc-300 px-2 py-1"
                     />
-                    <button className="text-red-600" onClick={() => removeFromCart(product.id)}>
+                    <button className="text-red-600" onClick={() => removeFromCart(product.id || product._id || '')}>
                       Remove
                     </button>
                   </div>
