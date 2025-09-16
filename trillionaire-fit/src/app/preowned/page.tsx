@@ -5,6 +5,9 @@ import { useRouter } from 'next/navigation';
 import { ProductCard } from '@/components/product/ProductCard';
 import { SearchBar } from '@/components/layout/SearchBar';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 interface Product {
   _id: string;
   name: string;

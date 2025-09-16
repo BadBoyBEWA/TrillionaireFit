@@ -7,6 +7,9 @@ import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { useAuth } from '@/context/AuthContext';
 import { Product } from '@/lib/types';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function HomePage() {
   const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -77,7 +80,7 @@ export default function HomePage() {
           <img 
             src="/image/TF_Pack.jpg" 
             alt="Luxury Fashion" 
-            className="w-full h-full object-cover"
+            className="w-full h-full object-contain"
           />
         </div>
       </section>

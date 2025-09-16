@@ -6,6 +6,9 @@ import { ProductCard } from '@/components/product/ProductCard';
 import { CategorySearch } from '@/components/layout/CategorySearch';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 interface Product {
   _id: string;
   name: string;

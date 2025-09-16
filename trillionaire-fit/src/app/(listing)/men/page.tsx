@@ -4,6 +4,9 @@ import { useState, useEffect } from 'react';
 import { ProductCard } from '@/components/product/ProductCard';
 import { Product } from '@/lib/types';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 export default function MenListingPage() {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);

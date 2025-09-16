@@ -3,6 +3,9 @@
 import { useState, useEffect } from 'react';
 import { ProductCard } from '@/components/product/ProductCard';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 interface Product {
   _id: string;
   name: string;
