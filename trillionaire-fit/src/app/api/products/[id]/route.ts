@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { z } from 'zod';
@@ -49,7 +49,7 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const product = await Product.findById(params.id);
     
@@ -113,7 +113,7 @@ export async function PUT(
     // Require admin authentication
     requireAdmin(request);
     
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const validatedData = updateProductSchema.parse(body);
@@ -215,7 +215,7 @@ export async function DELETE(
     // Require admin authentication
     requireAdmin(request);
     
-    await connectDB();
+    await dbConnect();
 
     const product = await Product.findById(params.id);
     if (!product) {

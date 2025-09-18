@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
 import { requireAdmin } from '@/lib/auth-helpers';
@@ -8,7 +8,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 export async function GET(request: NextRequest) {
   try {
     const admin = requireAdmin(request);
-    await connectDB();
+    await dbConnect();
 
     // Get total orders
     const totalOrders = await Order.countDocuments();

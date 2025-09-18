@@ -1,11 +1,11 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 
 // GET /api/categories - Get all categories with product counts
 export async function GET() {
   try {
-    await connectDB();
+    await dbConnect();
 
     // Aggregate categories with product counts
     const categories = await Product.aggregate([

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import { verifyPaystackTransaction } from '@/lib/paystack';
 import { z } from 'zod';
@@ -11,7 +11,7 @@ const manualVerifySchema = z.object({
 // POST /api/payments/paystack/manual-verify - Manually verify payment
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const { reference } = manualVerifySchema.parse(body);

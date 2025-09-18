@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { requireAdmin } from '@/lib/auth-helpers';
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     requireAdmin(request);
     
     // Connect to MongoDB
-    await connectDB();
+    await dbConnect();
 
     // Get and validate query parameters
     const { searchParams } = new URL(request.url);
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     requireAdmin(request);
     
     // Connect to MongoDB
-    await connectDB();
+    await dbConnect();
 
     // Parse and validate the request body
     const body = await request.json();

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import Product from '@/models/Product';
 import { requireAuth } from '@/lib/auth-helpers';
@@ -43,7 +43,7 @@ const createOrderSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const { searchParams } = new URL(request.url);
     const page = parseInt(searchParams.get('page') || '1');
@@ -95,7 +95,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const validatedData = createOrderSchema.parse(body);

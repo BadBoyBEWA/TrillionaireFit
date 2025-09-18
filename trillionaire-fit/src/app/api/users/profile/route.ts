@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import { requireAuth } from '@/lib/auth-helpers';
 import { z } from 'zod';
@@ -15,7 +15,7 @@ const updateProfileSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const userProfile = await User.findById(user.userId)
       .select('firstName lastName email phone')
@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const validatedData = updateProfileSchema.parse(body);

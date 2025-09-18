@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import { getCSRFTokenFromRequest, verifyCSRFToken } from '@/lib/csrf';
 import { authRateLimiter, createRateLimitResponse } from '@/lib/rate-limit';
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     }
 
     console.log('✅ Rate limit and CSRF checks passed');
-    await connectDB();
+    await dbConnect();
     console.log('✅ Database connected');
 
     const body = await request.json();

@@ -10,7 +10,11 @@
     "test": "jest",
     "test:watch": "jest --watch",
     "test:coverage": "jest --coverage",
-    "export": "next build && next export"
+    "export": "next build && next export",
+    "db:local": "node scripts/switch-db.js local",
+    "db:atlas": "node scripts/switch-db.js atlas",
+    "db:status": "node scripts/switch-db.js status",
+    "db:migrate": "node scripts/migrate-db.js"
   },
   "dependencies": {
     "@paystack/inline-js": "^2.22.7",
@@ -42,6 +46,7 @@
     "autoprefixer": "^10.4.20",
     "eslint": "^8.57.0",
     "eslint-config-next": "14.2.5",
+    "glob": "^11.0.3",
     "jest": "^30.1.3",
     "jest-environment-jsdom": "^30.1.2",
     "postcss": "^8.4.47",

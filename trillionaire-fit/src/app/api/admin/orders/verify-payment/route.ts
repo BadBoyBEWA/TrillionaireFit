@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { z } from 'zod';
@@ -12,7 +12,7 @@ const verifyPaymentSchema = z.object({
 export async function POST(request: NextRequest) {
   try {
     const admin = requireAdmin(request);
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const { orderId } = verifyPaymentSchema.parse(body);

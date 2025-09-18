@@ -1,10 +1,9 @@
 import { NextResponse } from 'next/server';
-import { validateStartup } from '@/lib/startup-validation';
+import { checkDatabaseHealth, getDatabaseInfo } from '@/lib/db';
 
 export async function GET() {
   try {
     // Skip database validation during build time
-    // Check if we're in a build context by looking for build-specific indicators
     const isBuildTime = process.env.NODE_ENV === 'production' && 
                        (process.env.npm_lifecycle_event === 'build' || 
                         process.argv.includes('build') ||
@@ -16,24 +15,30 @@ export async function GET() {
         message: 'Build-time health check - database validation skipped',
         timestamp: new Date().toISOString(),
         environment: process.env.NODE_ENV,
+        database: getDatabaseInfo(),
       });
     }
 
-    const result = await validateStartup();
+    // Use the new database health check
+    const healthCheck = await checkDatabaseHealth();
     
-    if (result.success) {
+    if (healthCheck.status === 'healthy') {
       return NextResponse.json({
         status: 'healthy',
-        message: result.message,
+        message: healthCheck.message,
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
+        environment: healthCheck.environment,
+        database: healthCheck.database,
+        connection: getDatabaseInfo(),
       });
     } else {
       return NextResponse.json({
         status: 'unhealthy',
-        message: result.message,
+        message: healthCheck.message,
         timestamp: new Date().toISOString(),
-        environment: process.env.NODE_ENV,
+        environment: healthCheck.environment,
+        database: healthCheck.database,
+        connection: getDatabaseInfo(),
       }, { status: 503 });
     }
   } catch (error) {
@@ -42,6 +47,7 @@ export async function GET() {
       message: error instanceof Error ? error.message : 'Unknown error',
       timestamp: new Date().toISOString(),
       environment: process.env.NODE_ENV,
+      connection: getDatabaseInfo(),
     }, { status: 500 });
   }
 }

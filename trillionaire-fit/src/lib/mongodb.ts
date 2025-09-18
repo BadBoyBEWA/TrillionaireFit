@@ -1,9 +1,9 @@
 import mongoose from 'mongoose';
 
-const MONGODB_URI = process.env.MONGODB_URI;
+const MONGODB_URI = process.env.MONGODB_ATLAS_URI || process.env.MONGODB_URI;
 
 if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
+  throw new Error('Please define the MONGODB_URI or MONGODB_ATLAS_URI environment variable inside .env.local');
 }
 
 /**
@@ -23,19 +23,19 @@ async function connectDB() {
   }
 
   if (!cached.promise) {
-    const opts = {
-      bufferCommands: false,
-    };
+    console.log(`🔌 Connecting to MongoDB via Mongoose...`);
 
-    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
-      return mongoose;
-    });
+    cached.promise = mongoose.connect(MONGODB_URI!).then((mongooseConnection) => {
+      console.log(`✅ Successfully connected to MongoDB via Mongoose`);
+      return mongooseConnection;
+    }) as any;
   }
 
   try {
     cached.conn = await cached.promise;
   } catch (e) {
     cached.promise = null;
+    console.error('❌ Mongoose connection failed:', e);
     throw e;
   }
 

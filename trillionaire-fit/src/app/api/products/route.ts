@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Product from '@/models/Product';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { z } from 'zod';
@@ -66,7 +66,7 @@ const querySchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 GET /api/products - Starting product fetch');
-    await connectDB();
+    await dbConnect();
     console.log('✅ Database connected for GET');
 
     const { searchParams } = new URL(request.url);
@@ -213,7 +213,7 @@ export async function POST(request: NextRequest) {
     requireAdmin(request);
     console.log('✅ Admin authentication passed');
     
-    await connectDB();
+    await dbConnect();
     console.log('✅ Database connected');
 
     const body = await request.json();

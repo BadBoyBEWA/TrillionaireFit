@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User, { IUserInput } from '@/models/User';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Connect to DB
-    await connectDB();
+    await dbConnect();
 
     // Parse & validate
     const body = await request.json();

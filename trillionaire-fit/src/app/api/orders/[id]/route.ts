@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import { requireAuth } from '@/lib/auth-helpers';
 
@@ -10,7 +10,7 @@ export async function GET(
 ) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const order = await Order.findOne({ 
       _id: params.id, 
@@ -72,7 +72,7 @@ export async function DELETE(
 ) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const order = await Order.findOne({ 
       _id: params.id, 

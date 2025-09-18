@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import { requireAuth } from '@/lib/auth-helpers';
 import { z } from 'zod';
@@ -21,7 +21,7 @@ const addressSchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const userProfile = await User.findById(user.userId)
       .select('addresses')
@@ -57,7 +57,7 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const validatedData = addressSchema.parse(body);
@@ -120,7 +120,7 @@ export async function POST(request: NextRequest) {
 export async function PUT(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const { id, ...addressData } = body;
@@ -202,7 +202,7 @@ export async function PUT(request: NextRequest) {
 export async function DELETE(request: NextRequest) {
   try {
     const user = requireAuth(request);
-    await connectDB();
+    await dbConnect();
 
     const { searchParams } = new URL(request.url);
     const addressId = searchParams.get('id');

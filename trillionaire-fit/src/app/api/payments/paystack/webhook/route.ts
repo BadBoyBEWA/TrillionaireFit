@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import crypto from 'crypto';
 
 // POST /api/payments/paystack/webhook - Handle Paystack webhooks
 export async function POST(request: NextRequest) {
   try {
-    await connectDB();
+    await dbConnect();
 
     const body = await request.text();
     const signature = request.headers.get('x-paystack-signature');

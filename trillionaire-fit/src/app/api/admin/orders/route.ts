@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import Order from '@/models/Order';
 import User from '@/models/User';
 import { requireAdmin } from '@/lib/auth-helpers';
@@ -8,7 +8,7 @@ import { requireAdmin } from '@/lib/auth-helpers';
 export async function GET(request: NextRequest) {
   try {
     const admin = requireAdmin(request);
-    await connectDB();
+    await dbConnect();
 
     const { searchParams } = new URL(request.url);
     const status = searchParams.get('status');

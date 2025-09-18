@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import connectDB from '@/lib/mongodb';
+import dbConnect from '@/lib/db';
 import User from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { getCSRFTokenFromRequest, verifyCSRFToken } from '@/lib/csrf';
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    await connectDB();
+    await dbConnect();
 
     const body = await request.json();
     const { token, password } = body;
