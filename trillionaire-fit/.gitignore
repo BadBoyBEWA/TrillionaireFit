@@ -26,3 +26,14 @@ pnpm-debug.log*
 # Local secret config
 config/secrets.ts
 config/admin.secrets.json
+
+
+# Ignore MongoDB files if ever copied here
+WiredTiger*
+*.wt
+*.bson
+*.lock
+_mdb_catalog.*
+journal/
+diagnostic.data/
+storage.bson
