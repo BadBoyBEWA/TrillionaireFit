@@ -44,6 +44,8 @@ export interface IOrder extends Document {
     paystackReference?: string;
     paystackTransactionId?: string;
     amount: number;
+    upfrontAmount?: number;
+    remainingAmount?: number;
     currency: string;
   };
   status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
@@ -212,6 +214,14 @@ const OrderSchema = new Schema<IOrder>({
     amount: {
       type: Number,
       required: true,
+      min: 0
+    },
+    upfrontAmount: {
+      type: Number,
+      min: 0
+    },
+    remainingAmount: {
+      type: Number,
       min: 0
     },
     currency: {

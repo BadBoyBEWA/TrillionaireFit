@@ -16,6 +16,83 @@ body {
   background: var(--background);
 }
 
+/* Fonts */
+.font-playfair {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-cormorant {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+/* Luxurious Typography System */
+.font-luxury {
+  font-family: 'Playfair Display', serif;
+}
+
+.font-luxury-body {
+  font-family: 'Cormorant Garamond', serif;
+}
+
+.font-luxury-heading {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  letter-spacing: -0.025em;
+}
+
+.font-luxury-display {
+  font-family: 'Playfair Display', serif;
+  font-weight: 700;
+  letter-spacing: -0.05em;
+}
+
+.font-luxury-elegant {
+  font-family: 'Cormorant Garamond', serif;
+  font-weight: 500;
+  letter-spacing: 0.025em;
+}
+
+/* Typography Scale */
+.text-luxury-xs {
+  @apply text-xs font-luxury-body;
+}
+
+.text-luxury-sm {
+  @apply text-sm font-luxury-body;
+}
+
+.text-luxury-base {
+  @apply text-base font-luxury-body;
+}
+
+.text-luxury-lg {
+  @apply text-lg font-luxury-body;
+}
+
+.text-luxury-xl {
+  @apply text-xl font-luxury-heading;
+}
+
+.text-luxury-2xl {
+  @apply text-2xl font-luxury-heading;
+}
+
+.text-luxury-3xl {
+  @apply text-3xl font-luxury-display;
+}
+
+.text-luxury-4xl {
+  @apply text-4xl font-luxury-display;
+}
+
+.text-luxury-5xl {
+  @apply text-5xl font-luxury-display;
+}
+
+.text-luxury-6xl {
+  @apply text-6xl font-luxury-display;
+}
+
 /* Components */
 .container-responsive {
   @apply mx-auto w-full max-w-7xl px-4 md:px-6 lg:px-8;

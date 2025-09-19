@@ -14,10 +14,13 @@
     "db:local": "node scripts/switch-db.js local",
     "db:atlas": "node scripts/switch-db.js atlas",
     "db:status": "node scripts/switch-db.js status",
-    "db:migrate": "node scripts/migrate-db.js"
+    "db:migrate": "node scripts/migrate-db.js",
+    "setup:email": "node setup-email.js"
   },
   "dependencies": {
+    "@heroicons/react": "^2.2.0",
     "@paystack/inline-js": "^2.22.7",
+    "@sendgrid/mail": "^8.1.5",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/mongoose": "^5.11.96",

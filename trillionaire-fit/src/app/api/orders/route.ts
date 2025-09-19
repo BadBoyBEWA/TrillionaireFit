@@ -141,6 +141,11 @@ export async function POST(request: NextRequest) {
     const shippingCost = subtotal > 50000 ? 0 : 2000; // Free shipping over ₦50,000
     const tax = Math.round(subtotal * 0.075); // 7.5% VAT
     const total = subtotal + shippingCost + tax;
+    
+    // Calculate payment amounts based on method
+    const isCashOnDelivery = validatedData.paymentMethod === 'cash_on_delivery';
+    const upfrontAmount = isCashOnDelivery ? Math.round(total * 0.5) : total;
+    const remainingAmount = isCashOnDelivery ? total - upfrontAmount : 0;
 
     // Generate order number
     const timestamp = Date.now().toString(36);
@@ -180,6 +185,8 @@ export async function POST(request: NextRequest) {
         method: validatedData.paymentMethod,
         status: 'pending',
         amount: total,
+        upfrontAmount: upfrontAmount,
+        remainingAmount: remainingAmount,
         currency: 'NGN'
       },
       status: 'pending',

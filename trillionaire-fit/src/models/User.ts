@@ -45,13 +45,13 @@ const UserSchema: Schema = new Schema({
   },
   firstName: {
     type: String,
-    required: [true, 'First name is required'],
+    required: false,
     trim: true,
     maxlength: [50, 'First name cannot be more than 50 characters']
   },
   lastName: {
     type: String,
-    required: [true, 'Last name is required'],
+    required: false,
     trim: true,
     maxlength: [50, 'Last name cannot be more than 50 characters']
   },
@@ -151,6 +151,16 @@ const UserSchema: Schema = new Schema({
   }]
 }, {
   timestamps: false // We're manually handling createdAt
+});
+
+// Pre-save middleware to populate firstName and lastName from name
+UserSchema.pre('save', function(next) {
+  if (this.name && (!this.firstName || !this.lastName)) {
+    const nameParts = this.name.trim().split(' ');
+    this.firstName = nameParts[0] || '';
+    this.lastName = nameParts.slice(1).join(' ') || '';
+  }
+  next();
 });
 
 // Prevent model overwrite issues with hot reload in Next.js

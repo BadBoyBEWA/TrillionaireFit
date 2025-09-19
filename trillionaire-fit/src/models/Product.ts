@@ -200,6 +200,7 @@ const ProductSchema = new Schema<IProduct>({
   }
 }, {
   timestamps: true,
+  collection: 'products',
   toJSON: { virtuals: true },
   toObject: { virtuals: true }
 });

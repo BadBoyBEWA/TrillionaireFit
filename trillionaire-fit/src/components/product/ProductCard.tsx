@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { Product } from '@/lib/types';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
+import WishlistButton from '@/components/wishlist/WishlistButton';
 
 type Props = { product: Product };
 
@@ -39,24 +40,27 @@ export function ProductCard({ product }: Props) {
             SALE
           </div>
         )}
+        <div className="absolute top-2 left-2 opacity-0 group-hover:opacity-100 transition-opacity">
+          <WishlistButton productId={product._id || product.id || ''} />
+        </div>
       </div>
       <div className="p-4">
-        <p className="text-sm text-zinc-500">{product.designer}</p>
-        <p className="font-medium">{product.name}</p>
+        <p className="text-sm text-zinc-500 font-luxury-elegant">{product.designer}</p>
+        <p className="font-luxury-elegant">{product.name}</p>
         
         <div className="flex items-center gap-2 mt-1">
-          <p className="text-sm font-semibold">${(product.price || 0).toFixed(2)}</p>
+          <p className="text-sm font-luxury-elegant">₦{(product.price || 0).toFixed(2)}</p>
           {hasDiscount && (
-            <p className="text-xs text-gray-500 line-through">${product.originalPrice?.toFixed(2)}</p>
+            <p className="text-xs text-gray-500 line-through font-luxury-elegant">₦{product.originalPrice?.toFixed(2)}</p>
           )}
         </div>
         
         <div className="flex items-center justify-between mt-2">
-          <span className={`text-xs ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
+          <span className={`text-xs font-luxury-elegant ${isOutOfStock ? 'text-red-600' : 'text-green-600'}`}>
             {isOutOfStock ? 'Out of stock' : `${product.totalStock || 0} in stock`}
           </span>
           {product.discountPercentage && (
-            <span className="text-xs bg-red-100 text-red-800 px-1.5 py-0.5 rounded">
+            <span className="text-xs bg-red-100 text-red-800 px-1.5 py-0.5 rounded font-luxury-elegant">
               {product.discountPercentage}% OFF
             </span>
           )}

@@ -1,32 +1,22 @@
 'use client';
 
-import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { AddToCartButton } from './AddToCartButton';
 import { ProductCard } from '@/components/product/ProductCard';
 import { BackButton } from './BackButton';
+import ProductImageGallery from '@/components/product/ProductImageGallery';
+import ProductReviews from '@/components/product/ProductReviews';
+import ProductRecommendations from '@/components/product/ProductRecommendations';
+import RecentlyViewed from '@/components/product/RecentlyViewed';
+import SocialShare from '@/components/social/SocialShare';
+import WishlistButton from '@/components/wishlist/WishlistButton';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
+import { recentlyViewed } from '@/lib/recently-viewed';
+import { Product } from '@/lib/types';
 
 type Props = { params: { id: string } };
 
-interface Product {
-  _id: string;
-  name: string;
-  designer: string;
-  description: string;
-  price: number;
-  originalPrice?: number;
-  images: string[];
-  gender: 'men' | 'women' | 'unisex';
-  category: string;
-  isActive: boolean;
-  isFeatured: boolean;
-  isOnSale: boolean;
-  sku: string;
-  totalStock: number;
-  discountPercentage?: number;
-  createdAt: string;
-}
+// Using Product type from lib/types instead of local interface
 
 export default function ProductDetail({ params }: Props) {
   const { id } = params;
@@ -47,10 +37,21 @@ export default function ProductDetail({ params }: Props) {
         }
         
         const data = await response.json();
-        setProduct(data.product || data);
+        const productData = data.product || data;
+        setProduct(productData);
+        
+        // Add to recently viewed
+        if (productData) {
+          recentlyViewed.add({
+            id: productData._id,
+            name: productData.name,
+            designer: productData.designer,
+            price: productData.price,
+            image: productData.images?.[0] || '/placeholder-product.jpg'
+          });
+        }
         
         // Fetch similar products (same category, different product)
-        const productData = data.product || data;
         if (productData.category) {
           const similarResponse = await fetch(`/api/products?category=${productData.category}&limit=4&exclude=${id}`);
           if (similarResponse.ok) {
@@ -87,7 +88,7 @@ export default function ProductDetail({ params }: Props) {
       <div className="space-y-12">
         <BackButton />
         <div className="text-center py-12">
-          <h1 className="text-2xl font-semibold mb-4">Product not found</h1>
+          <h1 className="text-2xl font-luxury-heading mb-4">Product not found</h1>
           <p className="text-gray-600 mb-6">The product you're looking for doesn't exist or has been removed.</p>
           <button 
             onClick={() => navigate('/')}
@@ -108,29 +109,24 @@ export default function ProductDetail({ params }: Props) {
       {/* Product Details */}
       <div className="grid gap-6 lg:gap-10 lg:grid-cols-2">
         <div className="card overflow-hidden">
-          <div className="relative aspect-square w-full">
-            <Image 
-              alt={product.name} 
-              src={product.images?.[0] || product.imageUrl || '/placeholder-image.jpg'} 
-              fill 
-              className="object-cover" 
-              priority 
-            />
-          </div>
+          <ProductImageGallery 
+            images={product.images || []} 
+            productName={product.name}
+          />
         </div>
         <div className="space-y-4 lg:space-y-6">
           <div>
-            <p className="text-zinc-500 text-sm sm:text-base">{product.designer}</p>
-            <h1 className="text-2xl sm:text-3xl font-semibold">{product.name}</h1>
+            <p className="text-zinc-500 text-sm sm:text-base font-luxury-elegant">{product.designer}</p>
+            <h1 className="text-2xl sm:text-3xl font-luxury-display">{product.name}</h1>
           </div>
           
           <div className="flex items-center gap-4">
-            <p className="text-xl font-semibold">${(product.price || 0).toFixed(2)}</p>
+            <p className="text-xl font-luxury-elegant">₦{(product.price || 0).toFixed(2)}</p>
             {product.originalPrice && product.originalPrice > (product.price || 0) && (
-              <p className="text-lg text-gray-500 line-through">${product.originalPrice.toFixed(2)}</p>
+              <p className="text-lg text-gray-500 line-through font-luxury-elegant">₦{product.originalPrice.toFixed(2)}</p>
             )}
             {product.discountPercentage && (
-              <span className="bg-red-100 text-red-800 text-sm font-medium px-2.5 py-0.5 rounded">
+              <span className="bg-red-100 text-red-800 text-sm font-luxury-elegant px-2.5 py-0.5 rounded">
                 {product.discountPercentage}% OFF
               </span>
             )}
@@ -139,7 +135,7 @@ export default function ProductDetail({ params }: Props) {
           <div className="space-y-3">
             <div className="flex items-center gap-4">
               <span className="text-sm text-gray-600">Availability:</span>
-              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-luxury-elegant ${
                 (product.totalStock || 0) === 0 
                   ? 'bg-red-100 text-red-800' 
                   : (product.totalStock || 0) < 10 
@@ -225,7 +221,7 @@ export default function ProductDetail({ params }: Props) {
                 <span className="text-gray-500 text-sm">Shipping:</span>
                 <div className="mt-1 text-sm">
                   {product.shippingInfo.freeShipping ? (
-                    <span className="text-green-600 font-medium">🆓 Free shipping</span>
+                    <span className="text-green-600 font-luxury-elegant">🆓 Free shipping</span>
                   ) : (
                     <span className="text-gray-700">Standard shipping</span>
                   )}
@@ -242,7 +238,18 @@ export default function ProductDetail({ params }: Props) {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <AddToCartButton id={product._id} disabled={(product.totalStock || 0) === 0} />
-            <button onClick={() => navigate('/cart')} className="btn-outline">View cart</button>
+              <button onClick={() => navigate('/cart')} className="btn-outline">View cart</button>
+            </div>
+            
+            {/* Wishlist and Social Share */}
+            <div className="flex items-center justify-between pt-4 border-t border-gray-200">
+              <WishlistButton productId={product._id!} />
+              <SocialShare 
+                url={`${window.location.origin}/product/${product._id}`}
+                title={product.name}
+                description={product.description}
+                image={product.images?.[0]}
+              />
             </div>
             
             {(product.totalStock || 0) === 0 && (
@@ -252,10 +259,24 @@ export default function ProductDetail({ params }: Props) {
         </div>
       </div>
 
+      {/* Product Reviews */}
+      <ProductReviews productId={product._id!} />
+
+      {/* Product Recommendations */}
+      <ProductRecommendations 
+        currentProduct={product}
+        allProducts={similarProducts}
+        title="You Might Also Like"
+        type="similar"
+      />
+
+      {/* Recently Viewed */}
+      <RecentlyViewed />
+
       {/* Similar Products */}
       {similarProducts.length > 0 && (
         <section className="space-y-6">
-          <h2 className="text-2xl font-semibold">You might also like</h2>
+          <h2 className="text-2xl font-luxury-heading">Similar Products</h2>
           <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             {similarProducts.map((similarProduct) => (
               <ProductCard key={similarProduct._id} product={similarProduct} />

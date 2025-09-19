@@ -257,7 +257,7 @@ export default function Dashboard() {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {/* Header */}
         <div className="mb-8">
-          <h1 className="text-2xl sm:text-3xl font-bold text-black">
+          <h1 className="text-2xl sm:text-3xl font-luxury-display text-black">
             Welcome back, {profile?.firstName || 'User'}!
           </h1>
           <p className="text-gray-600 mt-2">Manage your account and track your orders</p>
@@ -291,40 +291,40 @@ export default function Dashboard() {
         <div className="bg-white rounded-lg shadow-sm">
           {activeTab === 'overview' && (
             <div className="p-6">
-              <h2 className="text-lg font-medium text-black mb-6">Account Overview</h2>
+              <h2 className="text-lg font-luxury-heading text-black mb-6">Account Overview</h2>
               
               <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
                 <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-600 mb-2">Total Orders</h3>
-                  <p className="text-2xl font-bold text-black">{orders.length}</p>
+                  <h3 className="text-sm font-luxury-elegant text-gray-600 mb-2">Total Orders</h3>
+                  <p className="text-2xl font-luxury-display text-black">{orders.length}</p>
                 </div>
                 <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-600 mb-2">Pending Orders</h3>
-                  <p className="text-2xl font-bold text-black">
+                  <h3 className="text-sm font-luxury-elegant text-gray-600 mb-2">Pending Orders</h3>
+                  <p className="text-2xl font-luxury-display text-black">
                     {orders.filter(order => order.status === 'pending').length}
                   </p>
                 </div>
                 <div className="bg-gray-50 p-6 rounded-lg">
-                  <h3 className="text-sm font-medium text-gray-600 mb-2">Total Spent</h3>
-                  <p className="text-2xl font-bold text-black">
+                  <h3 className="text-sm font-luxury-elegant text-gray-600 mb-2">Total Spent</h3>
+                  <p className="text-2xl font-luxury-display text-black">
                     ₦{orders.reduce((sum, order) => sum + order.total, 0).toFixed(2)}
                   </p>
                 </div>
               </div>
 
               <div>
-                <h3 className="text-lg font-medium text-black mb-4">Recent Orders</h3>
+                <h3 className="text-lg font-luxury-heading text-black mb-4">Recent Orders</h3>
                 {orders.length > 0 ? (
                   <div className="space-y-4">
                     {orders.slice(0, 3).map((order) => (
                       <div key={order._id} className="border border-gray-200 rounded-lg p-4">
                         <div className="flex items-center justify-between">
                           <div>
-                            <p className="font-medium text-black">Order #{order.orderNumber}</p>
+                            <p className="font-luxury-heading text-black">Order #{order.orderNumber}</p>
                             <p className="text-sm text-gray-600">{formatDate(order.createdAt)}</p>
                           </div>
                           <div className="text-right">
-                            <p className="font-medium text-black">₦{order.total.toFixed(2)}</p>
+                            <p className="font-luxury-heading text-black">₦{order.total.toFixed(2)}</p>
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                               {order.status}
                             </span>
@@ -356,7 +356,7 @@ export default function Dashboard() {
 
           {activeTab === 'orders' && (
             <div className="p-6">
-              <h2 className="text-lg font-medium text-black mb-6">Order History</h2>
+              <h2 className="text-lg font-luxury-heading text-black mb-6">Order History</h2>
               
               {orders.length > 0 ? (
                 <div className="space-y-6">
@@ -364,12 +364,12 @@ export default function Dashboard() {
                     <div key={order._id} className="border border-gray-200 rounded-lg p-6">
                       <div className="flex items-center justify-between mb-4">
                         <div>
-                          <h3 className="font-medium text-black">Order #{order.orderNumber}</h3>
+                          <h3 className="font-luxury-heading text-black">Order #{order.orderNumber}</h3>
                           <p className="text-sm text-gray-600">Placed on {formatDate(order.createdAt)}</p>
                         </div>
                         <div className="flex items-center space-x-4">
                           <div className="text-right">
-                            <p className="font-medium text-black">₦{order.total.toFixed(2)}</p>
+                            <p className="font-luxury-heading text-black">₦{order.total.toFixed(2)}</p>
                             <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getStatusColor(order.status)}`}>
                               {order.status}
                             </span>
@@ -401,7 +401,7 @@ export default function Dashboard() {
                               )}
                             </div>
                             <div className="flex-1 min-w-0">
-                              <h4 className="text-sm font-medium text-black truncate">
+                              <h4 className="text-sm font-luxury-heading text-black truncate">
                                 {item.product?.name || 'Product not found'}
                               </h4>
                               <p className="text-sm text-gray-600">
@@ -409,7 +409,7 @@ export default function Dashboard() {
                               </p>
                               <p className="text-sm text-gray-600">Qty: {item.quantity}</p>
                             </div>
-                            <div className="text-sm font-medium text-black">
+                            <div className="text-sm font-luxury-heading text-black">
                               ₦{(item.price * item.quantity).toFixed(2)}
                             </div>
                           </div>
@@ -465,7 +465,7 @@ export default function Dashboard() {
 
           {activeTab === 'profile' && (
             <div className="p-6">
-              <h2 className="text-lg font-medium text-black mb-6">Profile Settings</h2>
+              <h2 className="text-lg font-luxury-heading text-black mb-6">Profile Settings</h2>
               <ProfileForm 
                 profile={profile} 
                 onUpdate={handleProfileUpdate}
@@ -476,7 +476,7 @@ export default function Dashboard() {
           {activeTab === 'addresses' && (
             <div className="p-6">
               <div className="flex items-center justify-between mb-6">
-                <h2 className="text-lg font-medium text-black">Saved Addresses</h2>
+                <h2 className="text-lg font-luxury-heading text-black">Saved Addresses</h2>
                 <button
                   onClick={() => {
                     setEditingAddress(null);
@@ -490,7 +490,7 @@ export default function Dashboard() {
 
               {showAddressForm && (
                 <div className="mb-8 p-6 border border-gray-200 rounded-lg">
-                  <h3 className="text-lg font-medium text-black mb-4">
+                  <h3 className="text-lg font-luxury-heading text-black mb-4">
                     {editingAddress ? 'Edit Address' : 'Add New Address'}
                   </h3>
                   <AddressForm
@@ -511,7 +511,7 @@ export default function Dashboard() {
                     <div key={address._id} className="border border-gray-200 rounded-lg p-6">
                       <div className="flex items-start justify-between mb-4">
                         <div>
-                          <h3 className="font-medium text-black">
+                          <h3 className="font-luxury-heading text-black">
                             {address.firstName} {address.lastName}
                           </h3>
                           {address.isDefault && (

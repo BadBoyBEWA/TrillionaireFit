@@ -35,9 +35,9 @@ export const emailTemplates = {
   passwordReset: (resetLink: string, firstName: string) => ({
     subject: 'Reset Your Password - Trillionaire Fit',
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #000; font-size: 28px; margin: 0;">TRILLIONAIRE FIT</h1>
+          <h1 style="color: #000; font-size: 28px; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700;">TRILLIONAIRE FIT</h1>
           <p style="color: #666; margin: 5px 0 0 0;">Luxury Fashion & Lifestyle</p>
         </div>
         
@@ -72,9 +72,9 @@ export const emailTemplates = {
   orderConfirmation: (order: any, customerName: string) => ({
     subject: `Order Confirmation #${order.orderNumber} - Trillionaire Fit`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #000; font-size: 28px; margin: 0;">TRILLIONAIRE FIT</h1>
+          <h1 style="color: #000; font-size: 28px; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700;">TRILLIONAIRE FIT</h1>
           <p style="color: #666; margin: 5px 0 0 0;">Luxury Fashion & Lifestyle</p>
         </div>
         
@@ -91,7 +91,7 @@ export const emailTemplates = {
             <h3 style="color: #000; margin: 0 0 15px 0;">Order Details</h3>
             <p style="margin: 5px 0;"><strong>Order Number:</strong> #${order.orderNumber}</p>
             <p style="margin: 5px 0;"><strong>Order Date:</strong> ${new Date(order.createdAt).toLocaleDateString()}</p>
-            <p style="margin: 5px 0;"><strong>Total Amount:</strong> ₦${order.total.toFixed(2)}</p>
+            <p style="margin: 5px 0;"><strong>Total Amount:</strong> ₦{order.total.toFixed(2)}</p>
             <p style="margin: 5px 0;"><strong>Status:</strong> <span style="color: #059669;">${order.status}</span></p>
           </div>
           
@@ -105,7 +105,7 @@ export const emailTemplates = {
                   <p style="margin: 0; color: #666; font-size: 14px;">Qty: ${item.quantity}</p>
                 </div>
                 <div style="text-align: right;">
-                  <p style="margin: 0; font-weight: bold;">₦${(item.price * item.quantity).toFixed(2)}</p>
+                  <p style="margin: 0; font-weight: bold;">₦{(item.price * item.quantity).toFixed(2)}</p>
                 </div>
               </div>
             `).join('')}
@@ -131,9 +131,9 @@ export const emailTemplates = {
   orderStatusUpdate: (order: any, customerName: string, newStatus: string) => ({
     subject: `Order Update #${order.orderNumber} - ${newStatus} - Trillionaire Fit`,
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #000; font-size: 28px; margin: 0;">TRILLIONAIRE FIT</h1>
+          <h1 style="color: #000; font-size: 28px; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700;">TRILLIONAIRE FIT</h1>
           <p style="color: #666; margin: 5px 0 0 0;">Luxury Fashion & Lifestyle</p>
         </div>
         
@@ -171,9 +171,9 @@ export const emailTemplates = {
   welcomeEmail: (firstName: string) => ({
     subject: 'Welcome to Trillionaire Fit!',
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
-          <h1 style="color: #000; font-size: 28px; margin: 0;">TRILLIONAIRE FIT</h1>
+          <h1 style="color: #000; font-size: 28px; margin: 0; font-family: 'Playfair Display', serif; font-weight: 700;">TRILLIONAIRE FIT</h1>
           <p style="color: #666; margin: 5px 0 0 0;">Luxury Fashion & Lifestyle</p>
         </div>
         
@@ -262,7 +262,7 @@ export async function sendTestEmail(to: string) {
   const testTemplate = {
     subject: 'Test Email - Trillionaire Fit',
     html: `
-      <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+      <div style="font-family: 'Cormorant Garamond', serif; max-width: 600px; margin: 0 auto; padding: 20px;">
         <h1 style="color: #000;">Test Email</h1>
         <p>This is a test email from Trillionaire Fit email service.</p>
         <p>If you received this email, the email service is working correctly!</p>

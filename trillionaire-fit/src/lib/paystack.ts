@@ -91,6 +91,10 @@ export interface PaystackVerifyResponse {
 
 // Initialize Paystack transaction
 export async function initializePaystackTransaction(transaction: PaystackTransaction): Promise<PaystackResponse> {
+  if (!paystackConfig.secretKey) {
+    throw new Error('Paystack secret key not configured');
+  }
+  
   const response = await fetch(`${paystackConfig.baseUrl}/transaction/initialize`, {
     method: 'POST',
     headers: {
@@ -102,7 +106,12 @@ export async function initializePaystackTransaction(transaction: PaystackTransac
 
   if (!response.ok) {
     const errorText = await response.text();
-    throw new Error(`Paystack API error: ${response.statusText}`);
+    console.error('Paystack API error:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText
+    });
+    throw new Error(`Paystack API error: ${response.statusText} - ${errorText}`);
   }
 
   return response.json();
@@ -110,6 +119,10 @@ export async function initializePaystackTransaction(transaction: PaystackTransac
 
 // Verify Paystack transaction
 export async function verifyPaystackTransaction(reference: string): Promise<PaystackVerifyResponse> {
+  if (!paystackConfig.secretKey) {
+    throw new Error('Paystack secret key not configured');
+  }
+  
   const response = await fetch(`${paystackConfig.baseUrl}/transaction/verify/${reference}`, {
     method: 'GET',
     headers: {
@@ -119,7 +132,14 @@ export async function verifyPaystackTransaction(reference: string): Promise<Pays
   });
 
   if (!response.ok) {
-    throw new Error(`Paystack API error: ${response.statusText}`);
+    const errorText = await response.text();
+    console.error('Paystack verification error:', {
+      status: response.status,
+      statusText: response.statusText,
+      body: errorText,
+      reference
+    });
+    throw new Error(`Paystack API error: ${response.statusText} - ${errorText}`);
   }
 
   return response.json();

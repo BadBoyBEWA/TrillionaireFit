@@ -66,8 +66,54 @@ const querySchema = z.object({
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 GET /api/products - Starting product fetch');
+    
+    // Connect to database with timeout handling
     await dbConnect();
     console.log('✅ Database connected for GET');
+
+    // DEBUG: Add comprehensive debugging information
+    const mongoose = await import('mongoose');
+    console.log('🔍 DEBUG - Mongoose connection state:', mongoose.default.connection.readyState);
+    console.log('🔍 DEBUG - Mongoose connection host:', mongoose.default.connection.host);
+    console.log('🔍 DEBUG - Mongoose connection name:', mongoose.default.connection.name);
+    console.log('🔍 DEBUG - Mongoose model names:', mongoose.default.modelNames());
+    console.log('🔍 DEBUG - Product model collection name:', Product.collection.name);
+    console.log('🔍 DEBUG - Product model collection db name:', Product.collection.dbName);
+    
+    // Ensure connection is fully established before proceeding
+    if (mongoose.default.connection.readyState !== 1) {
+      console.log('⚠️ WARNING - Connection not fully established, waiting...');
+      await new Promise((resolve, reject) => {
+        if (mongoose.default.connection.readyState === 1) {
+          resolve(true);
+        } else {
+          mongoose.default.connection.once('open', () => resolve(true));
+          mongoose.default.connection.once('error', reject);
+          // Timeout after 10 seconds
+          setTimeout(() => reject(new Error('Connection timeout')), 10000);
+        }
+      });
+      console.log('✅ Connection fully established');
+    }
+    
+    // Check if products collection exists and has documents
+    try {
+      const productCount = await Product.countDocuments();
+      console.log('🔍 DEBUG - Total products in collection:', productCount);
+      
+      if (productCount === 0) {
+        console.log('⚠️ WARNING - Products collection is empty!');
+        // List all collections in the database
+        if (mongoose.default.connection.db) {
+          const collections = await mongoose.default.connection.db.listCollections().toArray();
+          console.log('🔍 DEBUG - Available collections:', collections.map(c => c.name));
+        } else {
+          console.log('🔍 DEBUG - No database connection available for listing collections');
+        }
+      }
+    } catch (countError) {
+      console.error('❌ DEBUG - Error counting products:', countError);
+    }
 
     const { searchParams } = new URL(request.url);
     const queryParams = Object.fromEntries(searchParams.entries());

@@ -175,7 +175,7 @@ export function SearchBar() {
                 )}
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-gray-900 truncate">{product.name}</p>
+                <p className="text-sm font-luxury-elegant text-gray-900 truncate">{product.name}</p>
                 <p className="text-xs text-gray-500 truncate">{product.designer}</p>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="text-xs bg-gray-100 text-gray-600 px-2 py-0.5 rounded">
@@ -190,7 +190,7 @@ export function SearchBar() {
                     {product.gender}
                   </span>
                 </div>
-                <p className="text-sm font-semibold text-gray-900 mt-1">${product.price.toFixed(2)}</p>
+                <p className="text-sm font-luxury-heading text-gray-900 mt-1">₦{product.price.toFixed(2)}</p>
               </div>
             </button>
           ))}
@@ -203,7 +203,7 @@ export function SearchBar() {
               setResults([]);
               setIsOpen(false);
             }}
-            className="w-full px-4 py-3 text-center text-sm font-medium text-blue-600 hover:bg-blue-50 border-t border-gray-100"
+            className="w-full px-4 py-3 text-center text-sm font-luxury-elegant text-blue-600 hover:bg-blue-50 border-t border-gray-100"
           >
             View all results for "{query}"
           </button>
@@ -214,7 +214,7 @@ export function SearchBar() {
       {showSuggestions && query.length === 0 && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
           <div className="px-4 py-3">
-            <h4 className="text-sm font-medium text-gray-700 mb-2">Popular searches</h4>
+            <h4 className="text-sm font-luxury-elegant text-gray-700 mb-2">Popular searches</h4>
             <div className="flex flex-wrap gap-2">
               {suggestions.map((suggestion, index) => (
                 <button

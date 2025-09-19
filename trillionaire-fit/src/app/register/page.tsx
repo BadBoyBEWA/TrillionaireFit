@@ -58,7 +58,7 @@ export default function RegisterPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-2 border-black border-t-transparent mx-auto mb-4"></div>
-          <p className="text-gray-600 font-medium">Loading...</p>
+          <p className="text-gray-600 font-luxury-elegant">Loading...</p>
         </div>
       </div>
     );
@@ -69,11 +69,11 @@ export default function RegisterPage() {
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="w-full max-w-md p-8">
           <div className="text-center">
-            <div className="text-red-600 mb-4 text-lg font-medium">⚠️ Security Error</div>
+            <div className="text-red-600 mb-4 text-lg font-luxury-elegant">⚠️ Security Error</div>
             <p className="text-gray-600 mb-6">{csrfError}</p>
             <button 
               onClick={() => window.location.reload()} 
-              className="bg-black text-white px-6 py-3 text-base font-medium hover:bg-gray-800 transition-colors"
+              className="bg-black text-white px-6 py-3 text-base font-luxury-elegant hover:bg-gray-800 transition-colors"
             >
               Retry
             </button>
@@ -90,11 +90,11 @@ export default function RegisterPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-14 sm:h-16">
             <div className="flex items-center">
-              <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-black">TRILLIONAIRE FIT</h1>
+              <h1 className="text-lg sm:text-xl lg:text-2xl font-luxury-display text-black">TRILLIONAIRE FIT</h1>
             </div>
             <div className="hidden sm:block text-sm text-gray-500">
               Already have an account?{' '}
-              <a href="/login" className="text-black font-medium hover:underline">
+              <a href="/login" className="text-black font-luxury-elegant hover:underline">
                 Sign in
               </a>
             </div>
@@ -105,13 +105,13 @@ export default function RegisterPage() {
       {/* Main Content */}
       <div className="max-w-md mx-auto px-4 sm:px-6 py-8 sm:py-12 lg:py-16">
         <div className="text-center mb-6 sm:mb-8">
-          <h2 className="text-2xl sm:text-3xl font-light text-black mb-2">Create account</h2>
+          <h2 className="text-2xl sm:text-3xl font-luxury-heading text-black mb-2">Create account</h2>
           <p className="text-sm sm:text-base text-gray-600">Join Trillionaire Fit today</p>
         </div>
 
         <form className="space-y-4 sm:space-y-6" onSubmit={handleRegister}>
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-black mb-2">
+            <label htmlFor="name" className="block text-sm font-luxury-elegant text-black mb-2">
               Full name
             </label>
             <input
@@ -129,7 +129,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-black mb-2">
+            <label htmlFor="email" className="block text-sm font-luxury-elegant text-black mb-2">
               Email address
             </label>
             <input
@@ -147,7 +147,7 @@ export default function RegisterPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-black mb-2">
+            <label htmlFor="password" className="block text-sm font-luxury-elegant text-black mb-2">
               Password
             </label>
             <div className="relative">
@@ -197,7 +197,7 @@ export default function RegisterPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-black text-white py-3 sm:py-4 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
+            className="w-full bg-black text-white py-3 sm:py-4 px-6 text-sm sm:text-base font-luxury-elegant hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98]"
           >
             {loading ? (
               <div className="flex items-center justify-center">
@@ -214,7 +214,7 @@ export default function RegisterPage() {
         <div className="mt-4 sm:hidden text-center">
           <p className="text-sm text-gray-600">
             Already have an account?{' '}
-            <a href="/login" className="text-black font-medium hover:underline">
+            <a href="/login" className="text-black font-luxury-elegant hover:underline">
               Sign in
             </a>
           </p>

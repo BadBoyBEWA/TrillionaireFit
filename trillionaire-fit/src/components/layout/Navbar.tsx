@@ -7,6 +7,7 @@ import { SearchBar } from './SearchBar';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { useAuth } from '@/context/AuthContext';
 import { useRouter } from 'next/navigation'; // ✅ import router
+import { HeartIcon } from '@/components/ui/SocialIcons';
 
 export function Navbar() {
   const { navigate } = useNavigationWithLoading();
@@ -51,18 +52,18 @@ export function Navbar() {
         {/* Logo */}
         <button 
           onClick={() => navigate('/')} 
-          className="flex items-center space-x-2 text-xl font-semibold tracking-tight hover:opacity-80 transition-opacity"
+          className="flex items-center space-x-2 text-xl font-luxury font-semibold tracking-tight hover:opacity-80 transition-opacity"
         >
           <img 
             src="/image/TF_Logo_2.jpg" 
             alt="Trillionaire Fit Logo" 
             className="w-8 h-8 rounded-full object-cover"
           />
-          <span>{publicConfig.siteName}</span>
+          <span className="text-2xl font-luxury-display italic tracking-wide text-gray-900">{publicConfig.siteName}</span>
         </button>
 
         {/* Desktop Navigation */}
-        <nav className="hidden md:flex items-center gap-8 text-sm">
+        <nav className="hidden md:flex items-center gap-8 text-sm ml-8">
           {/* Main Categories */}
           <div className="flex items-center gap-6">
             <button onClick={() => navigate('/men')} className="hover:underline transition-colors font-medium">Men</button>
@@ -77,11 +78,11 @@ export function Navbar() {
           </div>
           
           {/* About Link */}
-          <button onClick={() => navigate('/about')} className="hover:underline transition-colors text-black font-medium">About</button>
+          <button onClick={() => navigate('/about')} className="hover:underline transition-colors text-black font-luxury-elegant mr-4">About</button>
         </nav>
 
         {/* User Actions */}
-        <div className="hidden md:flex items-center gap-4">
+        <div className="hidden md:flex items-center gap-6">
           {user?.role === 'admin' && (
             <div className="relative group">
               <button className="hover:underline transition-colors font-medium text-black flex items-center">
@@ -120,31 +121,39 @@ export function Navbar() {
           <div className="flex items-center gap-4">
           {user ? (
             <>
-                {/* <button 
+                <button 
+                  onClick={() => navigate('/wishlist')}
+                  className="flex items-center space-x-1 px-3 py-2 text-gray-700 hover:text-red-500 transition-colors font-luxury-elegant"
+                  title="Wishlist"
+                >
+                  <HeartIcon className="h-5 w-5" />
+                  <span className="hidden sm:inline">Wishlist</span>
+                </button>
+                <button 
                   onClick={() => navigate('/dashboard')}
-                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+                  className="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-luxury-elegant"
                 >
                   Dashboard
-                </button> */}
-                <span className="text-sm text-gray-600 font-medium">Welcome, {user.name}</span>
-              <button 
+                </button>
+                <span className="text-sm text-gray-600 font-luxury-elegant ml-2">Welcome, {user.name}</span>
+                <button 
                   onClick={handleLogout}
-                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-medium"
-              >
-                Logout
-              </button>
+                  className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors font-luxury-elegant ml-4"
+                >
+                  Logout
+                </button>
             </>
           ) : (
             <>
                 <button 
                   onClick={() => navigate('/login')} 
-                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
+                  className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-luxury-elegant"
                 >
                   Login
                 </button>
                 <button 
                   onClick={() => navigate('/register')} 
-                  className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-medium"
+                  className="px-4 py-2 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition-colors font-luxury-elegant"
                 >
                   Register
                 </button>
@@ -154,7 +163,7 @@ export function Navbar() {
         </div>
 
         {/* Cart for Desktop */}
-        <div className="hidden md:block">
+        <div className="hidden md:block ml-6">
           <Suspense>
             <CartIndicator />
           </Suspense>
@@ -207,28 +216,28 @@ export function Navbar() {
             
             {/* Main Categories */}
             <div className="space-y-1 mb-6">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Shop</h3>
+              <h3 className="text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider mb-3">Shop</h3>
               <button 
                 onClick={() => handleNavigation('/men')} 
-                className="block w-full text-left py-2 text-sm font-medium hover:underline"
+                className="block w-full text-left py-2 text-sm font-luxury-elegant hover:underline"
               >
                 Men
               </button>
               <button 
                 onClick={() => handleNavigation('/new-in')} 
-                className="block w-full text-left py-2 text-sm font-medium hover:underline"
+                className="block w-full text-left py-2 text-sm font-luxury-elegant hover:underline"
               >
                 New In
               </button>
               <button 
                 onClick={() => handleNavigation('/preowned')} 
-                className="block w-full text-left py-2 text-sm font-medium hover:underline"
+                className="block w-full text-left py-2 text-sm font-luxury-elegant hover:underline"
               >
                 Preowned
               </button>
               <button 
                 onClick={() => handleNavigation('/sale')} 
-                className="block w-full text-left py-2 text-sm font-medium hover:underline"
+                className="block w-full text-left py-2 text-sm font-luxury-elegant hover:underline"
               >
                 Sale
               </button>
@@ -236,10 +245,10 @@ export function Navbar() {
             
             {/* Other Links */}
             <div className="space-y-1 mb-6">
-              <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider mb-3">Info</h3>
+              <h3 className="text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider mb-3">Info</h3>
               <button 
                 onClick={() => handleNavigation('/about')} 
-                className="block w-full text-left py-2 text-sm text-gray-600 hover:underline"
+                className="block w-full text-left py-2 text-sm font-luxury-elegant text-gray-600 hover:underline"
               >
                 About
               </button>
@@ -272,6 +281,13 @@ export function Navbar() {
 
             {user ? (
               <>
+                <button 
+                  onClick={() => handleNavigation('/wishlist')}
+                  className="flex items-center justify-center space-x-2 w-full py-2 px-4 text-sm text-gray-700 hover:bg-gray-50 transition-colors font-medium"
+                >
+                  <HeartIcon className="h-5 w-5" />
+                  <span>Wishlist</span>
+                </button>
                 <button 
                   onClick={() => handleNavigation('/dashboard')}
                   className="block w-full text-center py-2 px-4 text-sm border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"

@@ -36,6 +36,13 @@ const config: Config = {
           'Apple Color Emoji',
           'Segoe UI Emoji',
         ],
+        luxury: [
+          'Playfair Display',
+          'Cormorant Garamond',
+          'Crimson Text',
+          'Libre Baskerville',
+          'serif',
+        ],
       },
     },
   },

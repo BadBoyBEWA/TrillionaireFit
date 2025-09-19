@@ -61,49 +61,34 @@ export default function ImageUpload({
     setUploading(true);
 
     try {
-      // For now, we'll convert files to data URLs
-      // In a real app, you'd upload to a cloud service like Cloudinary, AWS S3, etc.
-      const newImageUrls: string[] = [];
-      
-      for (const file of files) {
-        // Validate file type
-        if (!file.type.startsWith('image/')) {
-          const message = `${file.name} is not an image file.`;
-          if (onError) {
-            onError(message);
-          } else {
-            alert(message);
-          }
-          continue;
-        }
+      // Upload files to server
+      const formData = new FormData();
+      files.forEach(file => {
+        formData.append('images', file);
+      });
 
-        // Validate file size (max 5MB)
-        if (file.size > 5 * 1024 * 1024) {
-          const message = `${file.name} is too large. Maximum size is 5MB.`;
-          if (onError) {
-            onError(message);
-          } else {
-            alert(message);
-          }
-          continue;
-        }
+      const response = await fetch('/api/upload/image', {
+        method: 'PUT',
+        body: formData,
+      });
 
-        // Convert to data URL for preview
-        const dataUrl = await new Promise<string>((resolve) => {
-          const reader = new FileReader();
-          reader.onload = () => resolve(reader.result as string);
-          reader.readAsDataURL(file);
-        });
-
-        newImageUrls.push(dataUrl);
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Upload failed');
       }
 
-      // Add new images to existing ones
-      onImagesChange([...images, ...newImageUrls]);
+      const result = await response.json();
+      
+      if (result.success && result.images) {
+        const newImageUrls = result.images.map((img: any) => img.imageUrl);
+        onImagesChange([...images, ...newImageUrls]);
+      } else {
+        throw new Error('Upload failed');
+      }
       
     } catch (error) {
-      console.error('Error processing files:', error);
-      const message = 'Error processing files. Please try again.';
+      console.error('Error uploading files:', error);
+      const message = error instanceof Error ? error.message : 'Error uploading files. Please try again.';
       if (onError) {
         onError(message);
       } else {
@@ -172,7 +157,7 @@ export default function ImageUpload({
           </div>
           
           <p className="text-xs text-gray-500">
-            PNG, JPG, GIF up to 5MB each (max {maxImages} images)
+            PNG, JPG, GIF up to 10MB each (max {maxImages} images)
           </p>
           
           {uploading && (

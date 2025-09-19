@@ -42,10 +42,10 @@ export default function HomePage() {
     <div className="space-y-14">
       <section className="grid gap-6 md:grid-cols-2 items-center">
         <div className="space-y-6">
-          <h1 className="text-4xl md:text-5xl font-semibold tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-luxury-display tracking-tight">
             Luxury fashion, curated for you
           </h1>
-          <p className="text-zinc-600 max-w-prose">
+          <p className="text-zinc-600 max-w-prose font-luxury-body">
             Discover the world's most coveted designers and emerging labels. Shop
             across boutiques worldwide with seamless checkout.
           </p>
@@ -53,18 +53,18 @@ export default function HomePage() {
           <div className="flex flex-col gap-3">
             {user ? (
               <div className="flex items-center gap-4">
-                <p className="text-green-600 font-medium">
+                <p className="text-green-600 font-luxury-elegant">
                   👋 Welcome, {user.name}!
                 </p>
                 <button
                   onClick={handleLogout}
-                  className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600"
+                  className="px-3 py-1 text-sm bg-red-500 text-white rounded-lg hover:bg-red-600 font-luxury-elegant"
                 >
                   Logout
                 </button>
               </div>
             ) : (
-              <p className="text-red-600 font-medium">
+              <p className="text-red-600 font-luxury-elegant">
                 You are not logged in. <a href="/login" className="underline">Login here</a>
               </p>
             )}
@@ -86,14 +86,14 @@ export default function HomePage() {
       </section>
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-semibold">Featured Products</h2>
+        <h2 className="text-2xl font-luxury-heading">Featured Products</h2>
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-2 border-black border-t-transparent"></div>
           </div>
         ) : featuredProducts.length === 0 ? (
           <div className="text-center text-gray-600">
-            <p>No featured products available at the moment.</p>
+            <p className="font-luxury-body">No featured products available at the moment.</p>
           </div>
         ) : (
           <div className="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">

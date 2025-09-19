@@ -120,7 +120,7 @@ function CheckoutSuccessContent() {
       <div className="min-h-screen bg-white flex items-center justify-center">
         <div className="text-center">
           <div className="text-red-600 text-6xl mb-4">⚠️</div>
-          <h1 className="text-2xl font-semibold mb-4">Order Not Found</h1>
+          <h1 className="text-2xl font-luxury-heading mb-4">Order Not Found</h1>
           <p className="text-gray-600 mb-6">{error || 'The order you are looking for does not exist.'}</p>
           <button 
             onClick={() => navigate('/')}
@@ -140,7 +140,7 @@ function CheckoutSuccessContent() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between items-center h-16">
             <div className="flex items-center">
-              <h1 className="text-2xl font-bold text-black">TRILLIONAIRE FIT</h1>
+              <h1 className="text-2xl font-luxury-display text-black">TRILLIONAIRE FIT</h1>
             </div>
             <div className="text-sm text-gray-500">
               Order Confirmation
@@ -153,14 +153,14 @@ function CheckoutSuccessContent() {
         {/* Success Message */}
         <div className="text-center mb-8 sm:mb-12">
           <div className="text-green-600 text-6xl sm:text-8xl mb-4">✓</div>
-          <h1 className="text-2xl sm:text-3xl font-semibold text-black mb-2">
+          <h1 className="text-2xl sm:text-3xl font-luxury-heading text-black mb-2">
             Order Placed Successfully!
           </h1>
           <p className="text-gray-600 mb-4">
             Thank you for your purchase. Your order has been confirmed.
           </p>
           <div className="bg-gray-100 px-4 py-2 rounded-lg inline-block">
-            <span className="text-sm font-medium text-gray-700">Order #</span>
+            <span className="text-sm font-luxury-elegant text-gray-700">Order #</span>
             <span className="text-sm font-mono text-black ml-1">{order.orderNumber}</span>
           </div>
         </div>
@@ -169,7 +169,7 @@ function CheckoutSuccessContent() {
         <div className="grid gap-8 lg:grid-cols-2">
           {/* Order Items */}
           <div>
-            <h2 className="text-lg font-semibold text-black mb-4">Order Items</h2>
+            <h2 className="text-lg font-luxury-heading text-black mb-4">Order Items</h2>
             <div className="space-y-4">
               {order.items.map((item, index) => (
                 <div key={index} className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg">
@@ -185,11 +185,11 @@ function CheckoutSuccessContent() {
                     )}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="text-sm font-medium text-black truncate">{item.name}</h3>
+                    <h3 className="text-sm font-luxury-elegant text-black truncate">{item.name}</h3>
                     <p className="text-xs text-gray-600">{item.designer}</p>
                     <p className="text-xs text-gray-600">Qty: {item.quantity}</p>
                   </div>
-                  <div className="text-sm font-medium text-black">
+                  <div className="text-sm font-luxury-elegant text-black">
                     ₦{(item.price * item.quantity).toFixed(2)}
                   </div>
                 </div>
@@ -199,11 +199,11 @@ function CheckoutSuccessContent() {
 
           {/* Order Summary */}
           <div>
-            <h2 className="text-lg font-semibold text-black mb-4">Order Summary</h2>
+            <h2 className="text-lg font-luxury-heading text-black mb-4">Order Summary</h2>
             <div className="bg-gray-50 p-6 rounded-lg space-y-4">
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Order Status</span>
-                <span className={`text-sm font-medium ${
+                <span className={`text-sm font-luxury-elegant ${
                   order.status === 'confirmed' ? 'text-green-600' : 'text-yellow-600'
                 }`}>
                   {order.status ? order.status.charAt(0).toUpperCase() + order.status.slice(1) : 'Unknown'}
@@ -211,7 +211,7 @@ function CheckoutSuccessContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Payment Status</span>
-                <span className={`text-sm font-medium ${
+                <span className={`text-sm font-luxury-elegant ${
                   order.paymentStatus === 'completed' ? 'text-green-600' : 'text-yellow-600'
                 }`}>
                   {order.paymentStatus ? order.paymentStatus.charAt(0).toUpperCase() + order.paymentStatus.slice(1) : 'Unknown'}
@@ -219,7 +219,7 @@ function CheckoutSuccessContent() {
               </div>
               <div className="flex justify-between">
                 <span className="text-sm text-gray-600">Total Amount</span>
-                <span className="text-sm font-semibold text-black">₦{order.total.toFixed(2)}</span>
+                <span className="text-sm font-luxury-heading text-black">₦{order.total.toFixed(2)}</span>
               </div>
               {order.estimatedDelivery && (
                 <div className="flex justify-between">
@@ -233,7 +233,7 @@ function CheckoutSuccessContent() {
 
             {/* Shipping Address */}
             <div className="mt-6">
-              <h3 className="text-sm font-semibold text-black mb-3">Shipping Address</h3>
+              <h3 className="text-sm font-luxury-heading text-black mb-3">Shipping Address</h3>
               <div className="text-sm text-gray-600 space-y-1">
                 <p>{order.shippingAddress.firstName} {order.shippingAddress.lastName}</p>
                 <p>{order.shippingAddress.email}</p>
@@ -260,13 +260,13 @@ function CheckoutSuccessContent() {
         <div className="mt-8 sm:mt-12 text-center space-y-4 sm:space-y-0 sm:space-x-4 sm:flex sm:justify-center">
           <button 
             onClick={() => navigate('/dashboard')}
-            className="w-full sm:w-auto px-6 py-3 bg-black text-white font-medium hover:bg-gray-800 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 bg-black text-white font-luxury-elegant hover:bg-gray-800 transition-colors"
           >
             Go to Dashboard
           </button>
           <button 
             onClick={() => navigate('/')}
-            className="w-full sm:w-auto px-6 py-3 border border-black text-black font-medium hover:bg-gray-50 transition-colors"
+            className="w-full sm:w-auto px-6 py-3 border border-black text-black font-luxury-elegant hover:bg-gray-50 transition-colors"
           >
             Continue Shopping
           </button>

@@ -10,43 +10,30 @@ interface DatabaseConfig {
   };
 }
 
-// Environment-based database configuration
+// Get database configuration - always use MONGODB_URI for Atlas connection
 const getDatabaseConfig = (): DatabaseConfig => {
-  const isProduction = process.env.NODE_ENV === 'production';
-  const isAtlas = process.env.MONGODB_ATLAS === 'true';
-  const useAtlas = isProduction || isAtlas;
-
-  if (useAtlas) {
-    // MongoDB Atlas configuration
-    const atlasUri = process.env.MONGODB_ATLAS_URI || process.env.MONGODB_URI;
-    
-    if (!atlasUri) {
-      throw new Error('MONGODB_ATLAS_URI or MONGODB_URI environment variable is required for Atlas connection');
-    }
-
-    return {
-      uri: atlasUri,
-      dbName: process.env.MONGODB_DB_NAME || 'trillionaire-fit',
-      options: {
-        maxPoolSize: 10,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
-      },
-    };
-  } else {
-    // Local MongoDB configuration
-    const localUri = process.env.MONGODB_LOCAL_URI || 'mongodb://localhost:27017';
-    
-    return {
-      uri: localUri,
-      dbName: process.env.MONGODB_DB_NAME || 'trillionaire-fit',
-      options: {
-        maxPoolSize: 5,
-        serverSelectionTimeoutMS: 5000,
-        socketTimeoutMS: 45000,
-      },
-    };
+  const mongoUri = process.env.MONGODB_URI;
+  
+  if (!mongoUri) {
+    throw new Error('MONGODB_URI environment variable is required');
   }
+
+  const dbName = process.env.MONGODB_DB_NAME || 'trillionaire-fit';
+  
+  // Mask the URI for security in logs
+  const maskedUri = mongoUri.replace(/\/\/.*@/, '//***:***@');
+  console.log(`🔗 MongoDB URI: ${maskedUri}`);
+  console.log(`📍 Database: ${dbName}`);
+
+  return {
+    uri: mongoUri,
+    dbName,
+    options: {
+      maxPoolSize: 10,
+      serverSelectionTimeoutMS: 30000,
+      socketTimeoutMS: 45000,
+    },
+  };
 };
 
 // Global connection cache
@@ -56,14 +43,14 @@ let cachedDb: Db | null = null;
 // Database connection helper
 export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
   if (cachedClient && cachedDb) {
+    console.log('✅ Using cached MongoDB connection');
     return { client: cachedClient, db: cachedDb };
   }
 
   const config = getDatabaseConfig();
   
   try {
-    console.log(`🔌 Connecting to ${process.env.NODE_ENV === 'production' ? 'Atlas' : 'Local'} MongoDB...`);
-    console.log(`📍 Database: ${config.dbName}`);
+    console.log('🔌 Connecting to MongoDB Atlas...');
     
     const client = new MongoClient(config.uri, config.options);
     
@@ -78,7 +65,7 @@ export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db
     cachedClient = client;
     cachedDb = db;
     
-    console.log(`✅ Successfully connected to ${process.env.NODE_ENV === 'production' ? 'Atlas' : 'Local'} MongoDB`);
+    console.log('✅ Successfully connected to MongoDB Atlas');
     
     return { client, db };
   } catch (error) {
@@ -129,7 +116,6 @@ export async function checkDatabaseHealth(): Promise<{
 // Environment detection helpers
 export const isProduction = (): boolean => process.env.NODE_ENV === 'production';
 export const isDevelopment = (): boolean => process.env.NODE_ENV === 'development';
-export const isUsingAtlas = (): boolean => process.env.MONGODB_ATLAS === 'true' || isProduction();
 
 // Database configuration getter
 export const getDatabaseInfo = () => {
@@ -137,7 +123,7 @@ export const getDatabaseInfo = () => {
   return {
     environment: process.env.NODE_ENV || 'development',
     database: config.dbName,
-    isAtlas: isUsingAtlas(),
+    isAtlas: true, // Always Atlas now
     uri: config.uri.replace(/\/\/.*@/, '//***:***@'), // Hide credentials in logs
   };
 };
@@ -148,26 +134,42 @@ export async function dbConnect() {
     // Import mongoose dynamically to avoid circular dependencies
     const mongoose = await import('mongoose');
     
-    // Get database configuration
-    const config = getDatabaseConfig();
-    
     // Check if already connected
     if (mongoose.default.connection.readyState === 1) {
       console.log('✅ Already connected to MongoDB via Mongoose');
       return mongoose.default.connection;
     }
     
-    // Connect using Mongoose
-    console.log(`🔌 Connecting to ${isUsingAtlas() ? 'Atlas' : 'Local'} MongoDB via Mongoose...`);
-    console.log(`📍 Database: ${config.dbName}`);
+    // Get database configuration
+    const config = getDatabaseConfig();
+    
+    // Connect using Mongoose with dbName option
+    console.log('🔌 Connecting to MongoDB Atlas via Mongoose...');
+    console.log(`🔍 DEBUG - Using URI: ${config.uri.replace(/\/\/.*@/, '//***:***@')}`);
+    console.log(`🔍 DEBUG - Using database name: ${config.dbName}`);
     
     const connection = await mongoose.default.connect(config.uri, {
+      dbName: config.dbName,
       maxPoolSize: config.options.maxPoolSize || 10,
-      serverSelectionTimeoutMS: config.options.serverSelectionTimeoutMS || 5000,
+      serverSelectionTimeoutMS: config.options.serverSelectionTimeoutMS || 30000,
       socketTimeoutMS: config.options.socketTimeoutMS || 45000,
+      connectTimeoutMS: 30000,
+      bufferCommands: false,
     });
     
-    console.log(`✅ Successfully connected to ${isUsingAtlas() ? 'Atlas' : 'Local'} MongoDB via Mongoose`);
+    // Wait for the connection to be fully established
+    await new Promise((resolve, reject) => {
+      if (mongoose.default.connection.readyState === 1) {
+        resolve(connection);
+      } else {
+        mongoose.default.connection.once('open', () => resolve(connection));
+        mongoose.default.connection.once('error', reject);
+      }
+    });
+    
+    console.log('✅ Successfully connected to MongoDB Atlas via Mongoose');
+    console.log(`🔍 Connection state: ${mongoose.default.connection.readyState}`);
+    console.log(`📊 Connection host: ${mongoose.default.connection.host}`);
     
     return connection;
   } catch (error) {
@@ -177,4 +179,4 @@ export async function dbConnect() {
 }
 
 // Export the main connection function as default
-export default connectToDatabase;
+export default dbConnect;

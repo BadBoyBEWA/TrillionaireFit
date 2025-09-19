@@ -183,3 +183,141 @@ If you encounter issues:
 ---
 
 **Note**: This email service is configured for development and production use. Make sure to test thoroughly before deploying to production.
+
+
+
+I can see the issue! The error `ETIMEDOUT` on port 587 indicates a **network connectivity problem**. This is a common issue that can be caused by several factors. Let me help you troubleshoot this:
+
+## 🔍 **Diagnosis: Network/Port Blocking Issue**
+
+The error shows your application can't connect to Gmail's SMTP server (`64.233.166.108:587`). This is typically caused by:
+
+1. **Firewall blocking port 587**
+2. **Antivirus software blocking the connection**
+3. **Corporate/ISP network restrictions**
+4. **Windows Defender blocking the connection**
+
+## ��️ **Solutions to Try:**
+
+### **Solution 1: Try Port 465 (SSL)**
+Let's modify your email configuration to use port 465 with SSL instead of port 587:
+
+
+[1 tool called]
+
+I can't edit the `.env.local` file directly, but you can make this change manually. Here's what to do:
+
+### **Step 1: Update Your Environment Variables**
+Open your `.env.local` file and change these lines:
+```env
+SMTP_PORT=465
+SMTP_SECURE=true
+```
+
+### **Step 2: Test the Connection**
+Let me create a simple network test to see if we can reach Gmail's servers:
+
+
+[2 tools called]
+
+The test shows that **port 587 is blocked** but port 465 might work. Let me also test some alternative solutions:
+
+## 🚀 **Quick Fixes to Try:**
+
+### **Fix 1: Use Port 465 with SSL**
+Update your `.env.local` file:
+```env
+SMTP_HOST=smtp.gmail.com
+SMTP_PORT=465
+SMTP_SECURE=true
+SMTP_USER=trillionairefitstore@gmail.com
+SMTP_PASS=pywalkhgislojhce
+```
+
+### **Fix 2: Try Alternative Gmail Ports**
+If 465 doesn't work, try these alternatives in your `.env.local`:
+```env
+# Option A: Port 25 (sometimes less restricted)
+SMTP_PORT=25
+SMTP_SECURE=false
+
+# Option B: Port 2525 (alternative)
+SMTP_PORT=2525
+SMTP_SECURE=false
+```
+
+### **Fix 3: Windows Firewall Exception**
+Run this command as Administrator to allow Node.js through the firewall:
+
+
+[1 tool called]
+
+### **Fix 4: Alternative Email Service**
+If Gmail continues to be blocked, let's try a different approach. Let me create a simple test with a different email service:
+
+
+[1 tool called]
+
+Now let's run this test to see which configuration works:
+
+
+[1 tool called]
+
+## 🚨 **Issue Confirmed: Network Blocking**
+
+All Gmail ports are being blocked by your network/firewall. This is a common issue. Here are the solutions:
+
+## 🛠️ **Solutions (Try in Order):**
+
+### **Solution 1: Use a Different Email Service**
+Since Gmail is blocked, let's try **SendGrid** (free tier available):
+
+1. **Sign up for SendGrid**: Go to https://sendgrid.com
+2. **Get API Key**: Create an API key in your SendGrid dashboard
+3. **Update your `.env.local`**:
+```env
+SMTP_HOST=smtp.sendgrid.net
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=apikey
+SMTP_PASS=your-sendgrid-api-key
+```
+
+### **Solution 2: Use Outlook/Hotmail**
+Try Microsoft's email service:
+```env
+SMTP_HOST=smtp-mail.outlook.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-outlook-email@outlook.com
+SMTP_PASS=your-outlook-password
+```
+
+### **Solution 3: Use Yahoo Mail**
+```env
+SMTP_HOST=smtp.mail.yahoo.com
+SMTP_PORT=587
+SMTP_SECURE=false
+SMTP_USER=your-yahoo-email@yahoo.com
+SMTP_PASS=your-yahoo-app-password
+```
+
+### **Solution 4: Contact Your ISP**
+Your internet service provider might be blocking SMTP ports. Contact them to ask about:
+- SMTP port restrictions
+- Business email service options
+- Port 587/465/25 availability
+
+### **Solution 5: Use a VPN**
+Try connecting through a VPN to bypass network restrictions.
+
+## �� **Recommended Next Steps:**
+
+1. **Try SendGrid first** (most reliable for development)
+2. **If SendGrid works**, update your `.env.local` with the new settings
+3. **Test the email functionality** again
+
+Would you like me to help you set up SendGrid, or would you prefer to try one of the other solutions first?
+
+
+[1 tool called]

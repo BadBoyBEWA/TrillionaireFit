@@ -16,9 +16,12 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { reference } = manualVerifySchema.parse(body);
 
-    // Find the order by reference
+    // Find the order by reference (could be order number or Paystack reference)
     const order = await Order.findOne({ 
-      orderNumber: reference,
+      $or: [
+        { orderNumber: reference },
+        { 'payment.paystackReference': reference }
+      ],
       status: 'pending'
     });
 
@@ -29,8 +32,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Use the Paystack reference for verification
+    const paystackReference = order.payment.paystackReference || reference;
+    
     // Verify payment with Paystack
-    const paystackResponse = await verifyPaystackTransaction(reference);
+    const paystackResponse = await verifyPaystackTransaction(paystackReference);
 
     if (!paystackResponse.status) {
       return NextResponse.json(

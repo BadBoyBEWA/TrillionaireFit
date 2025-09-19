@@ -31,6 +31,11 @@ const envSchema = z.object({
   SMTP_SECURE: z.string().optional(),
   SMTP_USER: z.string().email().optional(),
   SMTP_PASS: z.string().optional(),
+  
+  // Paystack configuration
+  PAYSTACK_PUBLIC_KEY: z.string().optional(),
+  PAYSTACK_SECRET_KEY: z.string().optional(),
+  PAYSTACK_BASE_URL: z.string().url().optional(),
 });
 
 // Validate environment variables
@@ -103,6 +108,9 @@ export function logEnvironmentStatus() {
     }
     if (!process.env.ADMIN_EMAIL) {
       warnings.push('ADMIN_EMAIL not set - admin user creation will be skipped');
+    }
+    if (!process.env.PAYSTACK_PUBLIC_KEY || !process.env.PAYSTACK_SECRET_KEY) {
+      warnings.push('PAYSTACK_PUBLIC_KEY or PAYSTACK_SECRET_KEY not set - payment processing will not work');
     }
     
     if (warnings.length > 0) {

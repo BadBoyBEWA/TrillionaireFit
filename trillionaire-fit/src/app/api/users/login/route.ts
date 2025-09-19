@@ -34,6 +34,22 @@ export async function POST(request: NextRequest) {
     }
 
     await dbConnect();
+    
+    // Ensure connection is fully established before proceeding
+    const mongoose = await import('mongoose');
+    if (mongoose.default.connection.readyState !== 1) {
+      console.log('⚠️ WARNING - Connection not fully established, waiting...');
+      await new Promise((resolve, reject) => {
+        if (mongoose.default.connection.readyState === 1) {
+          resolve(true);
+        } else {
+          mongoose.default.connection.once('open', () => resolve(true));
+          mongoose.default.connection.once('error', reject);
+          setTimeout(() => reject(new Error('Connection timeout')), 10000);
+        }
+      });
+      console.log('✅ Connection fully established');
+    }
 
     // Parse and validate request
     const body = await request.json();

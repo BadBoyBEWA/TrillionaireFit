@@ -57,7 +57,6 @@ export default function AdminProductsPage() {
   const [error, setError] = useState('');
   const [showAddForm, setShowAddForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
-  const [seeding, setSeeding] = useState(false);
   const [pagination, setPagination] = useState({
     page: 1,
     limit: 20,
@@ -145,29 +144,6 @@ export default function AdminProductsPage() {
     }
   };
 
-  // Seed sample products
-  const handleSeedProducts = async () => {
-    if (!confirm('This will clear all existing products and add sample data. Continue?')) return;
-
-    try {
-      setSeeding(true);
-      const response = await fetch('/api/admin/seed-products', {
-        method: 'POST',
-        credentials: 'include'
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to seed products');
-      }
-
-      // Refresh products list
-      fetchProducts(1);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Failed to seed products');
-    } finally {
-      setSeeding(false);
-    }
-  };
 
   if (loading) {
     return (
@@ -196,21 +172,14 @@ export default function AdminProductsPage() {
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
               </button>
-              <h1 className="text-2xl font-bold text-black">Product Management</h1>
+              <h1 className="text-2xl font-luxury-display text-black">Product Management</h1>
             </div>
             <div className="flex space-x-4">
               <button
                 onClick={() => setShowAddForm(true)}
-                className="bg-black text-white px-6 py-2 text-sm font-medium hover:bg-gray-800 transition-colors"
+                className="bg-black text-white px-6 py-2 text-sm font-luxury-elegant hover:bg-gray-800 transition-colors"
               >
                 Add Product
-              </button>
-              <button
-                onClick={handleSeedProducts}
-                disabled={seeding}
-                className="bg-gray-600 text-white px-6 py-2 text-sm font-medium hover:bg-gray-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              >
-                {seeding ? 'Seeding...' : 'Seed Sample Data'}
               </button>
             </div>
           </div>
@@ -231,25 +200,25 @@ export default function AdminProductsPage() {
             <table className="min-w-full divide-y divide-gray-200">
               <thead className="bg-gray-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Product
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Designer
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Price
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Gender
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Stock
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-luxury-elegant text-gray-500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
@@ -273,7 +242,7 @@ export default function AdminProductsPage() {
                           )}
                         </div>
                         <div className="ml-4">
-                          <div className="text-sm font-medium text-gray-900">
+                          <div className="text-sm font-luxury-elegant text-gray-900">
                             {product.name}
                           </div>
                           <div className="text-sm text-gray-500">
@@ -287,21 +256,21 @@ export default function AdminProductsPage() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       <div className="flex flex-col">
-                        <span className="font-medium">${product.price}</span>
+                        <span className="font-luxury-elegant">₦{product.price}</span>
                         {product.originalPrice && product.originalPrice > product.price && (
                           <span className="text-xs text-gray-500 line-through">
-                            ${product.originalPrice}
+                            ₦{product.originalPrice}
                           </span>
                         )}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-gray-100 text-gray-800">
+                      <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-luxury-elegant bg-gray-100 text-gray-800">
                         {product.gender}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm">
-                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-luxury-elegant ${
                         (product.totalStock || 0) === 0 
                           ? 'bg-red-100 text-red-800' 
                           : (product.totalStock || 0) < 10 
@@ -315,7 +284,7 @@ export default function AdminProductsPage() {
                       <div className="flex space-x-2">
                         <button
                           onClick={() => product._id && handleToggleStatus(product._id, product.isActive, 'isActive')}
-                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-luxury-elegant ${
                             product.isActive
                               ? 'bg-green-100 text-green-800'
                               : 'bg-red-100 text-red-800'
@@ -324,18 +293,18 @@ export default function AdminProductsPage() {
                           {product.isActive ? 'Active' : 'Inactive'}
                         </button>
                         {product.isFeatured && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-luxury-elegant bg-yellow-100 text-yellow-800">
                             Featured
                           </span>
                         )}
                         {product.isOnSale && (
-                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800">
+                          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-luxury-elegant bg-red-100 text-red-800">
                             Sale
                           </span>
                         )}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-luxury-elegant">
                       <div className="flex space-x-2">
                         <button
                           onClick={() => setEditingProduct(product)}
@@ -364,14 +333,14 @@ export default function AdminProductsPage() {
                 <button
                   onClick={() => fetchProducts(pagination.page - 1)}
                   disabled={pagination.page === 1}
-                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-luxury-elegant rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
                 <button
                   onClick={() => fetchProducts(pagination.page + 1)}
                   disabled={pagination.page === pagination.pages}
-                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                  className="ml-3 relative inline-flex items-center px-4 py-2 border border-gray-300 text-sm font-luxury-elegant rounded-md text-gray-700 bg-white hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
@@ -380,15 +349,15 @@ export default function AdminProductsPage() {
                 <div>
                   <p className="text-sm text-gray-700">
                     Showing{' '}
-                    <span className="font-medium">
+                    <span className="font-luxury-elegant">
                       {(pagination.page - 1) * pagination.limit + 1}
                     </span>{' '}
                     to{' '}
-                    <span className="font-medium">
+                    <span className="font-luxury-elegant">
                       {Math.min(pagination.page * pagination.limit, pagination.total)}
                     </span>{' '}
                     of{' '}
-                    <span className="font-medium">{pagination.total}</span>{' '}
+                    <span className="font-luxury-elegant">{pagination.total}</span>{' '}
                     results
                   </p>
                 </div>
@@ -397,14 +366,14 @@ export default function AdminProductsPage() {
                     <button
                       onClick={() => fetchProducts(pagination.page - 1)}
                       disabled={pagination.page === 1}
-                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-luxury-elegant text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Previous
                     </button>
                     <button
                       onClick={() => fetchProducts(pagination.page + 1)}
                       disabled={pagination.page === pagination.pages}
-                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-luxury-elegant text-gray-500 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       Next
                     </button>

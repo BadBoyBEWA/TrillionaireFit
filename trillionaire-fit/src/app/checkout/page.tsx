@@ -60,6 +60,10 @@ function CheckoutContent() {
   const shipping = subtotal > 50000 ? 0 : 2000; // Free shipping over ₦50,000
   const tax = Math.round(subtotal * 0.075); // 7.5% VAT
   const total = subtotal + shipping + tax;
+  
+  // Cash on Delivery: 50% upfront payment
+  const upfrontPayment = paymentMethod === 'cash_on_delivery' ? Math.round(total * 0.5) : total;
+  const remainingPayment = paymentMethod === 'cash_on_delivery' ? total - upfrontPayment : 0;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -193,11 +197,11 @@ function CheckoutContent() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-2.5 5M7 13l2.5 5m6-5v6a2 2 0 01-2 2H9a2 2 0 01-2-2v-6m8 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
                   </svg>
                 </div>
-                <h3 className="text-base sm:text-lg font-medium text-gray-900 mb-2">Your cart is empty</h3>
-                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6">Add some items to your cart to continue</p>
+                <h3 className="text-base sm:text-lg font-luxury-heading text-gray-900 mb-2">Your cart is empty</h3>
+                <p className="text-sm sm:text-base text-gray-600 mb-4 sm:mb-6 font-luxury-body">Add some items to your cart to continue</p>
                 <a
                   href="/"
-                  className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-black text-black text-sm sm:text-base font-medium hover:bg-gray-50 transition-colors"
+                  className="inline-flex items-center px-4 sm:px-6 py-2 sm:py-3 border border-black text-black text-sm sm:text-base font-luxury-elegant hover:bg-gray-50 transition-colors"
                 >
                   Continue Shopping
                 </a>
@@ -212,11 +216,11 @@ function CheckoutContent() {
 
                 {/* Shipping Information */}
                 <div>
-                  <h2 className="text-lg sm:text-xl font-medium text-black mb-4 sm:mb-6">Shipping Information</h2>
+                  <h2 className="text-lg sm:text-xl font-luxury-heading text-black mb-4 sm:mb-6">Shipping Information</h2>
                   <div className="space-y-4">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-black mb-2">First name *</label>
+                        <label className="block text-sm font-luxury-elegant text-black mb-2">First name *</label>
                         <input 
                           name="firstName"
                           value={formData.firstName}
@@ -227,7 +231,7 @@ function CheckoutContent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-black mb-2">Last name *</label>
+                        <label className="block text-sm font-luxury-elegant text-black mb-2">Last name *</label>
                         <input 
                           name="lastName"
                           value={formData.lastName}
@@ -239,7 +243,7 @@ function CheckoutContent() {
                       </div>
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Email address *</label>
+                      <label className="block text-sm font-luxury-elegant text-black mb-2">Email address *</label>
                       <input 
                         name="email"
                         type="email"
@@ -251,7 +255,7 @@ function CheckoutContent() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Phone number *</label>
+                      <label className="block text-sm font-luxury-elegant text-black mb-2">Phone number *</label>
                       <input 
                         name="phone"
                         type="tel"
@@ -263,7 +267,7 @@ function CheckoutContent() {
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-medium text-black mb-2">Address *</label>
+                      <label className="block text-sm font-luxury-elegant text-black mb-2">Address *</label>
                       <textarea 
                         name="address"
                         value={formData.address}
@@ -276,7 +280,7 @@ function CheckoutContent() {
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                       <div>
-                        <label className="block text-sm font-medium text-black mb-2">City *</label>
+                        <label className="block text-sm font-luxury-elegant text-black mb-2">City *</label>
                         <input 
                           name="city"
                           value={formData.city}
@@ -287,7 +291,7 @@ function CheckoutContent() {
                         />
                       </div>
                       <div>
-                        <label className="block text-sm font-medium text-black mb-2">State *</label>
+                        <label className="block text-sm font-luxury-elegant text-black mb-2">State *</label>
                         <input 
                           name="state"
                           value={formData.state}
@@ -298,7 +302,7 @@ function CheckoutContent() {
                         />
                       </div>
                       <div className="sm:col-span-2 lg:col-span-1">
-                        <label className="block text-sm font-medium text-black mb-2">ZIP code *</label>
+                        <label className="block text-sm font-luxury-elegant text-black mb-2">ZIP code *</label>
                         <input 
                           name="postalCode"
                           value={formData.postalCode}
@@ -314,7 +318,7 @@ function CheckoutContent() {
 
                 {/* Payment Method */}
                 <div>
-                  <h2 className="text-lg sm:text-xl font-medium text-black mb-4 sm:mb-6">Payment Method</h2>
+                  <h2 className="text-lg sm:text-xl font-luxury-elegant text-black mb-4 sm:mb-6">Payment Method</h2>
                   <div className="space-y-4">
                     <label className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
                       <input
@@ -339,9 +343,15 @@ function CheckoutContent() {
                         onChange={(e) => setPaymentMethod(e.target.value as 'cash_on_delivery')}
                         className="text-blue-600"
                       />
-                      <div>
+                      <div className="flex-1">
                         <span className="font-medium">Cash on Delivery</span>
-                        <p className="text-sm text-gray-600">Pay when your order arrives</p>
+                        <p className="text-sm text-gray-600">Pay 50% now, 50% on delivery</p>
+                        {paymentMethod === 'cash_on_delivery' && (
+                          <div className="mt-2 text-xs text-gray-500">
+                            <p>• Upfront: ₦{upfrontPayment.toFixed(2)}</p>
+                            <p>• On delivery: ₦{remainingPayment.toFixed(2)}</p>
+                          </div>
+                        )}
                       </div>
                     </label>
           </div>
@@ -361,7 +371,7 @@ function CheckoutContent() {
           {/* Order Summary */}
           <aside className="lg:col-span-1">
             <div className="bg-gray-50 p-4 sm:p-6">
-              <h2 className="text-base sm:text-lg font-medium text-black mb-4 sm:mb-6">Order Summary</h2>
+              <h2 className="text-base sm:text-lg font-luxury-elegant text-black mb-4 sm:mb-6">Order Summary</h2>
               
           {hasItems ? (
                 <div className="space-y-3 sm:space-y-4">
@@ -379,11 +389,11 @@ function CheckoutContent() {
                         )}
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-xs sm:text-sm font-medium text-black truncate">{item.product.name}</h3>
+                        <h3 className="text-xs sm:text-sm font-luxury-elegant text-black truncate">{item.product.name}</h3>
                         <p className="text-xs sm:text-sm text-gray-600">{item.product.designer}</p>
                         <p className="text-xs sm:text-sm text-gray-600">Qty: {item.quantity}</p>
                       </div>
-                      <div className="text-xs sm:text-sm font-medium text-black flex-shrink-0">
+                      <div className="text-xs sm:text-sm font-luxury-elegant text-black flex-shrink-0">
                         ₦{(item.product.price * item.quantity).toFixed(2)}
                       </div>
                 </div>
@@ -402,10 +412,24 @@ function CheckoutContent() {
                       <span>Tax (7.5%)</span>
                       <span>₦{tax.toFixed(2)}</span>
                     </div>
-                    <div className="flex justify-between text-base sm:text-lg font-medium text-black">
+                    <div className="flex justify-between text-base sm:text-lg font-luxury-elegant text-black">
                       <span>Total</span>
                       <span>₦{total.toFixed(2)}</span>
                     </div>
+                    {paymentMethod === 'cash_on_delivery' && (
+                      <>
+                        <div className="border-t border-gray-200 pt-3 mt-3">
+                          <div className="flex justify-between text-sm text-green-600">
+                            <span>Upfront Payment (50%)</span>
+                            <span>₦{upfrontPayment.toFixed(2)}</span>
+                          </div>
+                          <div className="flex justify-between text-sm text-gray-500">
+                            <span>Remaining (on delivery)</span>
+                            <span>₦{remainingPayment.toFixed(2)}</span>
+                          </div>
+                        </div>
+                      </>
+                    )}
               </div>
             </div>
           ) : (
