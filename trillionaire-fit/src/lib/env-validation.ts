@@ -110,7 +110,7 @@ export function logEnvironmentStatus() {
       warnings.push('ADMIN_EMAIL not set - admin user creation will be skipped');
     }
     if (!process.env.PAYSTACK_PUBLIC_KEY || !process.env.PAYSTACK_SECRET_KEY) {
-      warnings.push('PAYSTACK_PUBLIC_KEY or PAYSTACK_SECRET_KEY not set - payment processing will not work');
+      warnings.push('PAYSTACK_PUBLIC_KEY or PAYSTACK_SECRET_KEY not set - Paystack payment processing will not work');
     }
     
     if (warnings.length > 0) {

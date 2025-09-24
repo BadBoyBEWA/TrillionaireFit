@@ -68,8 +68,8 @@ export function Footer() {
 
         <div className="border-t border-gray-200 mt-8 pt-8 flex flex-col md:flex-row md:items-center md:justify-between">
           <p className="text-sm text-gray-600 font-luxury-elegant">
-            © {new Date().getFullYear()} Trillionaire Fit. All rights reserved.
-          </p>
+          © {new Date().getFullYear()} Trillionaire Fit. All rights reserved.
+        </p>
           <nav className="flex items-center gap-6 mt-4 md:mt-0">
             <a className="text-gray-600 hover:text-gray-900 transition-colors font-luxury-elegant" href="#">
               Privacy Policy
@@ -80,7 +80,7 @@ export function Footer() {
             <a className="text-gray-600 hover:text-gray-900 transition-colors font-luxury-elegant" href="#">
               Cookie Policy
             </a>
-          </nav>
+        </nav>
         </div>
       </div>
     </footer>

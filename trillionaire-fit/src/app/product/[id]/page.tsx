@@ -10,6 +10,8 @@ import ProductRecommendations from '@/components/product/ProductRecommendations'
 import RecentlyViewed from '@/components/product/RecentlyViewed';
 import SocialShare from '@/components/social/SocialShare';
 import WishlistButton from '@/components/wishlist/WishlistButton';
+import { ProductStructuredData } from '@/components/seo/ProductStructuredData';
+import { Breadcrumb } from '@/components/seo/Breadcrumb';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { recentlyViewed } from '@/lib/recently-viewed';
 import { Product } from '@/lib/types';
@@ -103,6 +105,17 @@ export default function ProductDetail({ params }: Props) {
 
   return (
     <div className="space-y-12">
+      {/* Structured Data */}
+      {product && <ProductStructuredData product={product} />}
+      
+      {/* Breadcrumb */}
+      <Breadcrumb 
+        items={[
+          { label: product.category || 'Fashion', href: `/${product.category?.toLowerCase()}` },
+          { label: product.name }
+        ]} 
+      />
+      
       {/* Back Navigation */}
       <BackButton />
 
@@ -238,7 +251,7 @@ export default function ProductDetail({ params }: Props) {
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
               <AddToCartButton id={product._id} disabled={(product.totalStock || 0) === 0} />
-              <button onClick={() => navigate('/cart')} className="btn-outline">View cart</button>
+            <button onClick={() => navigate('/cart')} className="btn-outline">View cart</button>
             </div>
             
             {/* Wishlist and Social Share */}

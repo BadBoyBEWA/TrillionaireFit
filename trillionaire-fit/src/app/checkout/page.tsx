@@ -5,6 +5,8 @@ import { useCart } from '@/components/cart/CartProvider';
 import { useAuth } from '@/context/AuthContext';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import CheckoutAuthGuard from '@/components/auth/CheckoutAuthGuard';
+import PaystackPaymentButton from '@/components/payment/PaystackPaymentButton';
+import { useToast } from '@/hooks/useToast';
 
 interface OrderItem {
   productId: string;
@@ -36,12 +38,13 @@ function CheckoutContent() {
   const { state, subtotal, clearCart } = useCart();
   const { user } = useAuth();
   const { navigate } = useNavigationWithLoading();
+  const { showToast } = useToast();
   
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [orderCreated, setOrderCreated] = useState(false);
   const [orderId, setOrderId] = useState('');
-  const [paymentUrl, setPaymentUrl] = useState('');
+  const [isProcessingPayment, setIsProcessingPayment] = useState(false);
 
   const [formData, setFormData] = useState<ShippingAddress>({
     firstName: '',
@@ -70,8 +73,53 @@ function CheckoutContent() {
     setFormData(prev => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+  // Handle Paystack payment success
+  const handlePaymentSuccess = async (transaction: any) => {
+    try {
+      setIsProcessingPayment(true);
+      
+      // Update order with payment details
+      const updateResponse = await fetch(`/api/orders/${orderId}`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        credentials: 'include',
+        body: JSON.stringify({
+          status: 'paid',
+          paymentDetails: {
+            transactionId: transaction.transactionId,
+            amount: transaction.amount,
+            currency: transaction.currency,
+            method: 'paystack'
+          }
+        })
+      });
+
+      if (!updateResponse.ok) {
+        throw new Error('Failed to update order with payment details');
+      }
+
+      showToast('Payment successful! Your order has been confirmed.', 'success');
+      clearCart();
+      navigate(`/checkout/success?order=${orderId}`);
+    } catch (error) {
+      console.error('Error updating order:', error);
+      showToast('Payment successful but failed to update order. Please contact support.', 'error');
+    } finally {
+      setIsProcessingPayment(false);
+    }
+  };
+
+  // Handle Paystack payment error
+  const handlePaymentError = (error: any) => {
+    console.error('Payment failed:', error);
+    showToast('Payment failed. Please try again.', 'error');
+    setIsProcessingPayment(false);
+  };
+
+  // Handle form submission for order creation
+  const handleOrderCreation = async () => {
     setLoading(true);
     setError('');
 
@@ -106,32 +154,8 @@ function CheckoutContent() {
       setOrderId(orderData.order.id);
       setOrderCreated(true);
 
-      // Initialize payment if Paystack is selected
-      if (paymentMethod === 'paystack') {
-        const paymentResponse = await fetch('/api/payments/paystack/initialize', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          credentials: 'include',
-          body: JSON.stringify({
-            orderId: orderData.order.id,
-            email: formData.email
-          })
-        });
-
-        if (!paymentResponse.ok) {
-          const errorData = await paymentResponse.json();
-          throw new Error(errorData.error || 'Failed to initialize payment');
-        }
-
-        const paymentData = await paymentResponse.json();
-        setPaymentUrl(paymentData.paymentUrl);
-        
-        // Redirect to Paystack
-        window.location.href = paymentData.paymentUrl;
-      } else {
-        // Cash on delivery - redirect to success page
+      // For cash on delivery, redirect immediately
+      if (paymentMethod === 'cash_on_delivery') {
         navigate(`/checkout/success?order=${orderData.order.id}`);
       }
 
@@ -207,7 +231,7 @@ function CheckoutContent() {
                 </a>
               </div>
             ) : (
-              <form className="space-y-6 sm:space-y-8" onSubmit={handleSubmit}>
+              <div className="space-y-6 sm:space-y-8">
                 {error && (
                   <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
                     {error}
@@ -331,7 +355,7 @@ function CheckoutContent() {
                       />
                       <div>
                         <span className="font-medium">Paystack</span>
-                        <p className="text-sm text-gray-600">Card, Bank Transfer, USSD</p>
+                        <p className="text-sm text-gray-600">Card payments, Bank transfers, USSD</p>
                       </div>
                     </label>
                     <label className="flex items-center space-x-3 p-4 border border-gray-200 rounded-lg hover:bg-gray-50 cursor-pointer">
@@ -357,14 +381,37 @@ function CheckoutContent() {
           </div>
           </div>
 
-                <button
-                  type="submit"
-                  disabled={loading}
-                  className="w-full bg-black text-white py-3 sm:py-4 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
-                >
-                  {loading ? 'Processing...' : paymentMethod === 'paystack' ? 'Pay with Paystack' : 'Place Order (COD)'}
-                </button>
-        </form>
+                {/* Payment Button */}
+                {!orderCreated ? (
+                  <button
+                    onClick={handleOrderCreation}
+                    disabled={loading}
+                    className="w-full bg-black text-white py-3 sm:py-4 px-6 text-sm sm:text-base font-medium hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-black focus:ring-offset-2 transition-all duration-200 transform hover:scale-[1.02] active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+                  >
+                    {loading ? 'Creating Order...' : 'Continue to Payment'}
+                  </button>
+                ) : paymentMethod === 'paystack' ? (
+                  <div className="space-y-4">
+                    <div className="bg-green-50 border border-green-200 text-green-700 px-4 py-3 rounded-lg">
+                      Order created successfully! Complete your payment below.
+                    </div>
+                    <PaystackPaymentButton
+                      amount={upfrontPayment}
+                      customerName={`${formData.firstName} ${formData.lastName}`}
+                      customerEmail={formData.email}
+                      customerPhone={formData.phone}
+                      currency="NGN"
+                      orderId={orderId}
+                      orderNumber={orderId} // You might want to get the actual order number
+                      userId={user?.userId}
+                      disabled={isProcessingPayment}
+                      onSuccess={handlePaymentSuccess}
+                      onError={handlePaymentError}
+                      className="w-full"
+                    />
+                  </div>
+                ) : null}
+              </div>
             )}
       </section>
 

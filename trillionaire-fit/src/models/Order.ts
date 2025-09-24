@@ -41,8 +41,11 @@ export interface IOrder extends Document {
   payment: {
     method: 'paystack' | 'cash_on_delivery';
     status: 'pending' | 'completed' | 'failed' | 'refunded';
+    flutterwaveReference?: string;
+    flutterwaveTransactionId?: string;
     paystackReference?: string;
     paystackTransactionId?: string;
+    transactionId?: string;
     amount: number;
     upfrontAmount?: number;
     remainingAmount?: number;
@@ -203,11 +206,23 @@ const OrderSchema = new Schema<IOrder>({
       enum: ['pending', 'completed', 'failed', 'refunded'],
       default: 'pending'
     },
+    flutterwaveReference: {
+      type: String,
+      trim: true
+    },
+    flutterwaveTransactionId: {
+      type: String,
+      trim: true
+    },
     paystackReference: {
       type: String,
       trim: true
     },
     paystackTransactionId: {
+      type: String,
+      trim: true
+    },
+    transactionId: {
       type: String,
       trim: true
     },

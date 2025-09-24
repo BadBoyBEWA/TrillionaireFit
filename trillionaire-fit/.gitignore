@@ -23,6 +23,7 @@ pnpm-debug.log*
 .TODO.md
 .PAYSTACK_SETUP.md
 .SECURITY.md
+.GOOGLE_SEO_CHECKLIST.md
 
 # Local secret config
 config/secrets.ts

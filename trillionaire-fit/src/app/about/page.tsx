@@ -1,4 +1,22 @@
 import Image from 'next/image';
+import { Metadata } from 'next';
+import { generateMetadata as generateSEOMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'About Trillionaire Fit',
+  description: 'Learn about Trillionaire Fit\'s mission to democratize luxury fashion. Meet our founder and discover our curated approach to bringing exclusive designer pieces to your wardrobe.',
+  keywords: [
+    'about trillionaire fit',
+    'luxury fashion founder',
+    'curated fashion',
+    'designer fashion marketplace',
+    'luxury retail',
+    'fashion curation',
+    'exclusive fashion',
+    'premium clothing'
+  ],
+  url: 'https://trillionairefit.com/about',
+});
 
 export default function AboutPage() {
   return (

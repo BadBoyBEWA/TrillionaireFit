@@ -43,11 +43,12 @@ export default function HomePage() {
       <section className="grid gap-6 md:grid-cols-2 items-center">
         <div className="space-y-6">
           <h1 className="text-4xl md:text-5xl font-luxury-display tracking-tight">
-            Luxury fashion, curated for you
+            Luxury Fashion Marketplace - Designer Clothes & Premium Clothing
           </h1>
           <p className="text-zinc-600 max-w-prose font-luxury-body">
-            Discover the world's most coveted designers and emerging labels. Shop
-            across boutiques worldwide with seamless checkout.
+            Discover the world's most coveted designers and emerging labels at Trillionaire Fit. 
+            Shop luxury fashion across boutiques worldwide with seamless checkout, premium quality, 
+            and worldwide shipping. Curated collections featuring exclusive designer pieces.
           </p>
 
           <div className="flex flex-col gap-3">
@@ -64,8 +65,8 @@ export default function HomePage() {
                 </button>
               </div>
             ) : (
-              <p className="text-red-600 font-luxury-elegant">
-                You are not logged in. <a href="/login" className="underline">Login here</a>
+              <p className="text-black-600 font-luxury-elegant">
+                <a href="/login" className="underline">Login here</a>
               </p>
             )}
 
@@ -76,17 +77,18 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="relative aspect-[4/3] w-full overflow-hidden rounded-2xl bg-zinc-100 border-2 border-gray-600">
+        <div className="w-full overflow-hidden rounded-2xl bg-zinc-100 border-2 border-gray-600">
           <img 
             src="/image/TF_Pack.jpg" 
-            alt="Luxury Fashion" 
+            alt="Trillionaire Fit luxury fashion collection - premium designer clothing and accessories" 
             className="w-full h-full object-contain"
+            loading="eager"
           />
         </div>
       </section>
 
       <section className="space-y-6">
-        <h2 className="text-2xl font-luxury-heading">Featured Products</h2>
+        <h2 className="text-2xl font-luxury-heading">Featured Luxury Designer Products</h2>
         {loading ? (
           <div className="flex items-center justify-center h-64">
             <div className="animate-spin rounded-full h-12 w-12 border-2 border-black border-t-transparent"></div>
@@ -109,6 +111,49 @@ export default function HomePage() {
             ))}
           </div>
         )}
+      </section>
+
+      {/* SEO Content Sections */}
+      <section className="space-y-8">
+        <div className="grid gap-8 md:grid-cols-3">
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Premium Quality</h3>
+            <p className="text-zinc-600 text-sm">
+              Every piece is handpicked for exceptional craftsmanship and luxury materials. 
+              We partner with renowned designers and emerging labels worldwide.
+            </p>
+          </div>
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Worldwide Shipping</h3>
+            <p className="text-zinc-600 text-sm">
+              Fast and secure delivery to your doorstep. With premium packaging and insurance.
+            </p>
+          </div>
+          <div className="text-center space-y-4">
+            <h3 className="text-xl font-semibold">Exclusive Access</h3>
+            <p className="text-zinc-600 text-sm">
+              Discover limited edition pieces and exclusive collections from top luxury brands. 
+              Be the first to access new arrivals and seasonal collections.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* Additional SEO Content */}
+      <section className="space-y-6">
+        <h2 className="text-2xl font-luxury-heading">Why Choose Trillionaire Fit?</h2>
+        <div className="prose prose-zinc max-w-none">
+          <p className="text-zinc-600 leading-relaxed">
+            At Trillionaire Fit, we believe luxury fashion should be accessible without compromising on quality or exclusivity. 
+            Our curated marketplace brings together the world's most prestigious designers and emerging talents, 
+            offering you a unique shopping experience that combines convenience with sophistication.
+          </p>
+          <p className="text-zinc-600 leading-relaxed">
+            Whether you're looking for timeless classics or the latest trends, our expert curation ensures every piece 
+            meets our high standards for quality, design, and craftsmanship. From luxury menswear to unisex fashion, 
+            we offer a comprehensive selection of premium fashion items.
+          </p>
+        </div>
       </section>
     </div>
   );

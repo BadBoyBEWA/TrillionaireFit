@@ -9,13 +9,68 @@ import { GlobalLoadingScreen } from '@/components/ui/GlobalLoadingScreen';
 import { Marquee } from '@/components/layout/Marquee';
 import { AuthProvider } from "@/context/AuthContext";
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { generateMetadata as generateSEOMetadata } from '@/lib/seo';
 
-export const metadata: Metadata = {
-  title: publicConfig.siteName,
-  description: 'Trillionaire Fit — Luxury fashion marketplace.',
-};
+export const metadata: Metadata = generateSEOMetadata({
+  title: 'Luxury Fashion Marketplace',
+  description: 'Trillionaire Fit — Discover the world\'s most coveted designers and emerging labels. Shop luxury fashion across boutiques worldwide with seamless checkout and premium quality.',
+  keywords: [
+    'luxury fashion',
+    'designer clothes',
+    'high-end fashion',
+    'premium clothing',
+    'fashion marketplace',
+    'luxury brands',
+    'designer wear',
+    'premium fashion',
+    'boutique shopping',
+    'worldwide shipping'
+  ],
+  url: 'https://trillionairefit.com',
+});
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
+  const organizationSchema = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": publicConfig.siteName,
+    "url": "https://trillionairefit.com",
+    "logo": "https://trillionairefit.com/image/TF_Logo_1.jpg",
+    "description": "Luxury fashion marketplace featuring curated designer pieces from around the world",
+    "foundingDate": "2024",
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "customer service",
+      "email": "support@trillionairefit.com"
+    },
+    "sameAs": [
+      "https://instagram.com/trillionairefit",
+      "https://twitter.com/trillionairefit",
+      "https://facebook.com/trillionairefit"
+    ],
+    "address": {
+      "@type": "PostalAddress",
+      "addressCountry": "NG"
+    }
+  };
+
+  const websiteSchema = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": publicConfig.siteName,
+    "url": "https://trillionairefit.com",
+    "description": "Luxury fashion marketplace featuring curated designer pieces from around the world",
+    "publisher": {
+      "@type": "Organization",
+      "name": publicConfig.siteName
+    },
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://trillionairefit.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
+
   return (
     <html lang="en">
       <head>
@@ -24,6 +79,22 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <link 
           href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap" 
           rel="stylesheet" 
+        />
+        {/* Favicon */}
+        <link rel="icon" href="/image/TF_Logo_1.jpg" type="image/jpeg" />
+        <link rel="apple-touch-icon" href="/image/TF_Logo_1.jpg" />
+        <link rel="manifest" href="/manifest.json" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(organizationSchema),
+          }}
+        />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify(websiteSchema),
+          }}
         />
       </head>
       <body className="min-h-screen bg-white text-zinc-900 antialiased font-luxury-body">

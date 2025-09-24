@@ -65,6 +65,74 @@ export async function GET(
   }
 }
 
+// PATCH /api/orders/[id] - Update single order
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  try {
+    const user = requireAuth(request);
+    await dbConnect();
+
+    const body = await request.json();
+    const { status, paymentDetails } = body;
+
+    const order = await Order.findOne({ 
+      _id: params.id, 
+      user: user.userId 
+    });
+
+    if (!order) {
+      return NextResponse.json(
+        { error: 'Order not found' },
+        { status: 404 }
+      );
+    }
+
+    // Update order fields
+    const updateData: any = {};
+    
+    if (status) {
+      updateData.status = status;
+    }
+    
+    if (paymentDetails) {
+      updateData.payment = {
+        ...order.payment,
+        ...paymentDetails,
+        status: 'paid',
+        paidAt: new Date()
+      };
+    }
+
+    const updatedOrder = await Order.findByIdAndUpdate(
+      params.id,
+      updateData,
+      { new: true, runValidators: true }
+    );
+
+    return NextResponse.json({ 
+      order: updatedOrder,
+      message: 'Order updated successfully' 
+    });
+
+  } catch (error) {
+    console.error('Update order error:', error);
+    
+    if (error instanceof Error && error.message.includes('Authentication')) {
+      return NextResponse.json(
+        { error: error.message },
+        { status: 401 }
+      );
+    }
+
+    return NextResponse.json(
+      { error: 'Failed to update order' },
+      { status: 500 }
+    );
+  }
+}
+
 // DELETE /api/orders/[id] - Delete single order
 export async function DELETE(
   request: NextRequest,

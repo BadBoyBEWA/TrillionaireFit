@@ -5,6 +5,12 @@ export function middleware(request: NextRequest) {
   // Security headers
   const response = NextResponse.next();
   
+  // Dev-only CSP warning logger
+  if (process.env.NODE_ENV === 'development') {
+    console.log('🔒 CSP Headers applied via src/middleware.ts');
+    console.log('📝 CSP Policy includes Stripe domains for secure payment processing');
+  }
+  
   // Prevent clickjacking
   response.headers.set('X-Frame-Options', 'DENY');
   
@@ -20,7 +26,7 @@ export function middleware(request: NextRequest) {
   // Content Security Policy
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' data:; connect-src 'self';"
+    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.stripe.com; frame-src 'self' https://js.stripe.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline';"
   );
   
   // Referrer Policy

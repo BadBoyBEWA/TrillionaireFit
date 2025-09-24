@@ -81,7 +81,7 @@ export default function ImageUpload({
       
       if (result.success && result.images) {
         const newImageUrls = result.images.map((img: any) => img.imageUrl);
-        onImagesChange([...images, ...newImageUrls]);
+      onImagesChange([...images, ...newImageUrls]);
       } else {
         throw new Error('Upload failed');
       }

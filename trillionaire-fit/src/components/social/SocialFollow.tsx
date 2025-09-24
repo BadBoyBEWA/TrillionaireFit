@@ -1,6 +1,6 @@
 'use client';
 
-import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon } from '@/components/ui/SocialIcons';
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, WhatsAppIcon } from '@/components/ui/SocialIcons';
 
 interface SocialFollowProps {
   className?: string;
@@ -8,29 +8,35 @@ interface SocialFollowProps {
 
 export default function SocialFollow({ className = '' }: SocialFollowProps) {
   const socialLinks = [
-    {
-      name: 'Facebook',
-      url: 'https://facebook.com/trillionairefit',
-      color: 'hover:text-blue-600',
-      icon: FacebookIcon
-    },
+    // {
+    //   name: 'Facebook',
+    //   url: 'https://facebook.com/trillionairefit',
+    //   color: 'hover:text-blue-600',
+    //   icon: FacebookIcon
+    // },
     {
       name: 'Instagram',
       url: 'https://instagram.com/trillionairefit',
       color: 'hover:text-pink-600',
       icon: InstagramIcon
     },
+    // {
+    //   name: 'Twitter',
+    //   url: 'https://twitter.com/trillionairefit',
+    //   color: 'hover:text-blue-400',
+    //   icon: TwitterIcon
+    // },
+    // {
+    //   name: 'YouTube',
+    //   url: 'https://youtube.com/@trillionairefit',
+    //   color: 'hover:text-red-600',
+    //   icon: YoutubeIcon
+    // },
     {
-      name: 'Twitter',
-      url: 'https://twitter.com/trillionairefit',
-      color: 'hover:text-blue-400',
-      icon: TwitterIcon
-    },
-    {
-      name: 'YouTube',
+      name: 'WhatsApp',
       url: 'https://youtube.com/@trillionairefit',
       color: 'hover:text-red-600',
-      icon: YoutubeIcon
+      icon: WhatsAppIcon
     }
   ];
 

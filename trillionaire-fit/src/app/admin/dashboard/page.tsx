@@ -183,8 +183,8 @@ export default function AdminDashboard() {
             Admin Dashboard
           </h1>
               <p className="text-gray-600 mt-2 font-luxury-elegant">Comprehensive analytics and management</p>
-            </div>
-            
+        </div>
+
             {/* Period Selector */}
             <div className="flex items-center space-x-2">
               <label className="text-sm font-medium text-gray-700 font-luxury-elegant">Period:</label>
@@ -216,7 +216,7 @@ export default function AdminDashboard() {
                   {analytics ? formatCurrency(analytics.overview.totalRevenue) : '₦0.00'}
                 </p>
               </div>
-              </div>
+            </div>
             </div> */}
 
           {/* Total Orders */}
