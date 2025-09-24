@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Product from '@/models/Product';
+import { Product } from '@/models/Product';
 import { requireAdmin } from '@/lib/auth-helpers';
 
 // GET /api/admin/inventory - Get inventory with filters and analytics

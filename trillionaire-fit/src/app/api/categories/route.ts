@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Product from '@/models/Product';
+import { Product } from '@/models/Product';
 
 // GET /api/categories - Get all categories with product counts
 export async function GET() {

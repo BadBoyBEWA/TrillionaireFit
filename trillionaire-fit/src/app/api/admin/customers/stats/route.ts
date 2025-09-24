@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/models/User';
-import Order from '@/models/Order';
+import { User } from '@/models/User';
+import { Order } from '@/models/Order';
 import { requireAdmin } from '@/lib/auth-helpers';
 
 // GET /api/admin/customers/stats - Get customer analytics

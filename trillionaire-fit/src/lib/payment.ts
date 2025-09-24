@@ -1,4 +1,4 @@
-import Transaction from '@/models/Transaction';
+import { Transaction } from '@/models/Transaction';
 import { connectDB } from './mongodb';
 
 // TypeScript interfaces for payment utilities

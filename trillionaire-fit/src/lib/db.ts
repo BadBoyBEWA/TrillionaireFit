@@ -41,7 +41,7 @@ let cachedClient: MongoClient | null = null;
 let cachedDb: Db | null = null;
 
 // Database connection helper
-export async function connectToDatabase(): Promise<{ client: MongoClient; db: Db }> {
+export async function connectDB(): Promise<{ client: MongoClient; db: Db }> {
   if (cachedClient && cachedDb) {
     console.log('✅ Using cached MongoDB connection');
     return { client: cachedClient, db: cachedDb };
@@ -92,7 +92,7 @@ export async function checkDatabaseHealth(): Promise<{
   environment: string;
 }> {
   try {
-    const { client } = await connectToDatabase();
+    const { client } = await connectDB();
     
     // Test basic operations
     await client.db('admin').command({ ping: 1 });

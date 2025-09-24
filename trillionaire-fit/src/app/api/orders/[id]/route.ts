@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
+import { Order } from '@/models/Order';
 import { requireAuth } from '@/lib/auth-helpers';
 
 // GET /api/orders/[id] - Get single order

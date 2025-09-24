@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/models/User';
+import { User } from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { registerSchema, querySchema, validateInput } from '@/lib/validation';

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
-import Product from '@/models/Product';
+import { Order } from '@/models/Order';
+import { Product } from '@/models/Product';
 import { requireAuth } from '@/lib/auth-helpers';
 import { sendOrderConfirmationEmail } from '@/lib/email';
 import { z } from 'zod';

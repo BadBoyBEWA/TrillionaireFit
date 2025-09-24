@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/models/User';
+import { User } from '@/models/User';
 import { requireAdmin } from '@/lib/auth-helpers';
 
 // PUT /api/admin/customers/[id]/toggle-status - Toggle customer active status

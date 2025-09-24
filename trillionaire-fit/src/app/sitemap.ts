@@ -1,5 +1,5 @@
 import { MetadataRoute } from 'next';
-import { connectToDatabase } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import { Product } from '@/models/Product';
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -73,7 +73,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   let productPages: MetadataRoute.Sitemap = [];
   
   try {
-    await connectToDatabase();
+    await connectDB();
     const products = await Product.find({ isActive: true })
       .select('_id updatedAt')
       .limit(1000); // Limit to prevent sitemap from being too large

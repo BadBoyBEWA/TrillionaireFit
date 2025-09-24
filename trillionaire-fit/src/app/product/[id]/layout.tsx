@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import { generateProductMetadata } from '@/lib/seo';
-import { connectToDatabase } from '@/lib/mongodb';
+import { connectDB } from '@/lib/mongodb';
 import { Product } from '@/models/Product';
 
 interface Props {
@@ -11,7 +11,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { id } = params;
   
   try {
-    await connectToDatabase();
+    await connectDB();
     const product = await Product.findById(id).select('name description price images designer category');
     
     if (!product) {

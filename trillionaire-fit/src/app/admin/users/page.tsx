@@ -1,5 +1,5 @@
-import connectDB from '@/lib/mongodb';
-import User from '@/models/User';
+import { connectDB } from '@/lib/mongodb';
+import { User } from '@/models/User';
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { verifyToken } from '@/lib/auth';

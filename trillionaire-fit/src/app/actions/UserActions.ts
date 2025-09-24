@@ -1,7 +1,7 @@
 'use server';
 
-import connectDB from '@/lib/mongodb';
-import User, { IUserInput } from '@/models/User';
+import { connectDB } from '@/lib/mongodb';
+import { User, IUserInput } from '@/models/User';
 
 export async function createUser(formData: FormData) {
   await connectDB();

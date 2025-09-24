@@ -1,9 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-// Force refresh the model to prevent caching issues
-if (mongoose.models.Review) {
-  delete mongoose.models.Review;
-}
+import mongoose, { Schema, Document, model, models } from 'mongoose';
 
 export interface IReview extends Document {
   user: mongoose.Types.ObjectId;
@@ -75,7 +70,5 @@ ReviewSchema.virtual('userInfo', {
   select: 'name email'
 });
 
-const Review = mongoose.models.Review || mongoose.model<IReview>('Review', ReviewSchema);
-
-export default Review;
+export const Review = models.Review || model('Review', ReviewSchema);
 

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Review from '@/models/Review';
-import Product from '@/models/Product';
-import Order from '@/models/Order';
+import { Review } from '@/models/Review';
+import { Product } from '@/models/Product';
+import { Order } from '@/models/Order';
 import { requireAuth } from '@/lib/auth-helpers';
 import { z } from 'zod';
 

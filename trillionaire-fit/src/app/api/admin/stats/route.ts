@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
-import Product from '@/models/Product';
+import { Order } from '@/models/Order';
+import { Product } from '@/models/Product';
 import { requireAdmin } from '@/lib/auth-helpers';
 
 // GET /api/admin/stats - Get admin dashboard statistics

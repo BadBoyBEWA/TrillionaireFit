@@ -24,7 +24,7 @@ pnpm-debug.log*
 .PAYSTACK_SETUP.md
 .SECURITY.md
 .GOOGLE_SEO_CHECKLIST.md
-
+.env.local.backup2
 # Local secret config
 config/secrets.ts
 config/admin.secrets.json

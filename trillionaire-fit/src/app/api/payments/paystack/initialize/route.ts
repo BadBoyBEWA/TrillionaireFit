@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
+import { Order } from '@/models/Order';
 import { requireAuth } from '@/lib/auth-helpers';
 import { initializePaystackTransaction, formatAmountForPaystack } from '@/lib/paystack';
 import { z } from 'zod';

@@ -1,5 +1,5 @@
 import { logEnvironmentStatus, generateSecureSecrets, isProduction } from './env-validation';
-import connectDB from './mongodb';
+import { connectDB } from './mongodb';
 
 export async function validateStartup() {
   console.log('🚀 Starting application validation...');

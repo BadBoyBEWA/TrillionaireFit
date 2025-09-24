@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
-import User from '@/models/User';
+import { Order } from '@/models/Order';
+import { User } from '@/models/User';
 import { requireAdmin } from '@/lib/auth-helpers';
 
 // GET /api/admin/orders - Get all orders (admin only)

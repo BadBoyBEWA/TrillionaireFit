@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import Order from '@/models/Order';
+import { Order } from '@/models/Order';
 import { requireAdmin } from '@/lib/auth-helpers';
 import { z } from 'zod';
 

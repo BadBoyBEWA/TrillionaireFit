@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import dbConnect from '@/lib/db';
-import User from '@/models/User';
+import { User } from '@/models/User';
 import bcrypt from 'bcryptjs';
 import { getCSRFTokenFromRequest, verifyCSRFToken } from '@/lib/csrf';
 import { authRateLimiter, createRateLimitResponse } from '@/lib/rate-limit';

@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, model, models } from 'mongoose';
 
 // TypeScript interface for User document
 export interface IUser extends Document {
@@ -163,11 +163,4 @@ UserSchema.pre('save', function(next) {
   next();
 });
 
-// Prevent model overwrite issues with hot reload in Next.js
-// Force schema refresh by deleting the existing model first
-if (mongoose.models.User) {
-  delete mongoose.models.User;
-}
-const User = mongoose.model<IUser>('User', UserSchema);
-
-export default User;
+export const User = models.User || model('User', UserSchema);

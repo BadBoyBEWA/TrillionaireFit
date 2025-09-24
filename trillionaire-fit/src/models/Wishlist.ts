@@ -1,9 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-// Force refresh the model to prevent caching issues
-if (mongoose.models.Wishlist) {
-  delete mongoose.models.Wishlist;
-}
+import mongoose, { Schema, Document, model, models } from 'mongoose';
 
 export interface IWishlist extends Document {
   user: mongoose.Types.ObjectId;
@@ -39,8 +34,6 @@ WishlistSchema.virtual('productCount').get(function() {
   return this.products.length;
 });
 
-const Wishlist = mongoose.models.Wishlist || mongoose.model<IWishlist>('Wishlist', WishlistSchema);
-
-export default Wishlist;
+export const Wishlist = models.Wishlist || model('Wishlist', WishlistSchema);
 
 

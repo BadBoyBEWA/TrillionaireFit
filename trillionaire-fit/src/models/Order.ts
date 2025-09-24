@@ -1,9 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-// Force refresh the model to prevent caching issues
-if (mongoose.models.Order) {
-  delete mongoose.models.Order;
-}
+import mongoose, { Schema, Document, model, models } from 'mongoose';
 
 export interface IOrder extends Document {
   orderNumber: string;
@@ -303,4 +298,4 @@ OrderSchema.index({ createdAt: -1 });
 
 // Order number is now generated manually in the API route
 
-export default mongoose.models.Order || mongoose.model<IOrder>('Order', OrderSchema);
+export const Order = models.Order || model('Order', OrderSchema);

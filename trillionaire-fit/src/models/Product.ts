@@ -1,9 +1,4 @@
-import mongoose, { Schema, Document } from 'mongoose';
-
-// Force refresh the model to prevent caching issues
-if (mongoose.models.Product) {
-  delete mongoose.models.Product;
-}
+import mongoose, { Schema, model, models } from "mongoose";
 
 export interface IProduct extends Document {
   name: string;
@@ -246,4 +241,4 @@ ProductSchema.pre('save', function(next) {
   next();
 });
 
-export default mongoose.models.Product || mongoose.model<IProduct>('Product', ProductSchema);
+export const Product = models.Product || model("Product", ProductSchema);

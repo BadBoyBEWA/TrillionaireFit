@@ -1,4 +1,4 @@
-import mongoose, { Document, Schema } from 'mongoose';
+import mongoose, { Document, Schema, model, models } from 'mongoose';
 
 // Transaction interface for TypeScript
 export interface ITransaction extends Document {
@@ -72,8 +72,5 @@ const TransactionSchema = new Schema<ITransaction>({
 TransactionSchema.index({ customerEmail: 1, createdAt: -1 });
 TransactionSchema.index({ status: 1, createdAt: -1 });
 
-// Create and export the model
-const Transaction = mongoose.models.Transaction || mongoose.model<ITransaction>('Transaction', TransactionSchema);
-
-export default Transaction;
+export const Transaction = models.Transaction || model('Transaction', TransactionSchema);
 

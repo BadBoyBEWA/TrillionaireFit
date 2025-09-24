@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/db';
+import { connectDB } from '@/lib/db';
 
 export async function GET(request: NextRequest) {
   try {
     console.log('🔍 TEST - Starting direct MongoClient test');
     
     // Use the MongoClient connection directly (not Mongoose)
-    const { client, db } = await connectToDatabase();
+    const { client, db } = await connectDB();
     console.log('✅ TEST - MongoClient connected successfully');
     
     // Get the products collection directly
