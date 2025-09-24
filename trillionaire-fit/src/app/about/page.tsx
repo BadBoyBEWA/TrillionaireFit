@@ -35,13 +35,20 @@ export default function AboutPage() {
       <section className="grid gap-12 md:grid-cols-2 items-start">
         {/* Profile Image */}
         <div className="space-y-6">
-          <div className="relative aspect-square w-full max-w-md mx-auto overflow-hidden rounded-2xl bg-zinc-100 flex items-center justify-center">
-            <div className="text-center space-y-4">
-              <div className="w-32 h-32 bg-zinc-200 rounded-full mx-auto flex items-center justify-center">
-                <span className="text-6xl">👤</span>
-              </div>
-              <p className="text-zinc-600 font-medium">Founder & Curator</p>
-            </div>
+          <div className="relative aspect-square w-full max-w-md mx-auto overflow-hidden rounded-2xl bg-zinc-100">
+            <Image
+              src="/image/about.jpg"
+              alt="Trillionaire Fit Founder - Luxury Fashion Curator"
+              width={400}
+              height={400}
+              className="w-full h-full object-fit"
+              priority
+            />
+            {/* <div className="absolute bottom-4 left-0 right-0 text-center">
+              <p className="text-white font-medium bg-black/50 px-4 py-2 rounded-lg backdrop-blur-sm">
+                Founder & Curator
+              </p>
+            </div> */}
           </div>
           
           {/* Quick Stats */}
@@ -95,15 +102,15 @@ export default function AboutPage() {
             <div className="space-y-3">
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
-                <span className="text-zinc-600">hello@trillionairefit.com</span>
+                <span className="text-zinc-600">trillionairefitstore@gmail.com</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
-                <span className="text-zinc-600">Follow @trillionairefit</span>
+                <span className="text-zinc-600">Follow @TRILLIONAIREFIT_STORE</span>
               </div>
               <div className="flex items-center gap-3">
                 <div className="w-2 h-2 bg-zinc-400 rounded-full"></div>
-                <span className="text-zinc-600">Based in New York, NY</span>
+                <span className="text-zinc-600">Based in Lagos, Ng</span>
               </div>
             </div>
           </div>

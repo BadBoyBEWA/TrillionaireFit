@@ -16,7 +16,7 @@ export default function SocialFollow({ className = '' }: SocialFollowProps) {
     // },
     {
       name: 'Instagram',
-      url: 'https://instagram.com/trillionairefit',
+      url: 'https://instagram.com/TRILLIONAIREFIT_STORE',
       color: 'hover:text-pink-600',
       icon: InstagramIcon
     },
@@ -34,7 +34,7 @@ export default function SocialFollow({ className = '' }: SocialFollowProps) {
     // },
     {
       name: 'WhatsApp',
-      url: 'https://youtube.com/@trillionairefit',
+      url: 'https://wa.link/ejkgxf',
       color: 'hover:text-red-600',
       icon: WhatsAppIcon
     }

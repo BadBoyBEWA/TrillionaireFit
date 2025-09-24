@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { useState, useEffect } from 'react';
 import { ProductCard } from '@/components/product/ProductCard';
+import { Carousel } from '@/components/ui/Carousel';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { useAuth } from '@/context/AuthContext';
 import { Product } from '@/lib/types';
@@ -77,14 +78,30 @@ export default function HomePage() {
           </div>
         </div>
 
-        <div className="w-full overflow-hidden rounded-2xl bg-zinc-100 border-2 border-gray-600">
-          <img 
-            src="/image/TF_Pack.jpg" 
-            alt="Trillionaire Fit luxury fashion collection - premium designer clothing and accessories" 
-            className="w-full h-full object-contain"
-            loading="eager"
-          />
-        </div>
+        <Carousel 
+          items={[
+            {
+              src: "/image/TF_Pack.jpg",
+              alt: "Trillionaire Fit luxury fashion collection - premium designer clothing and accessories"
+            },
+            {
+              src: "/image/carousel1.jpg",
+              alt: "Trillionaire Fit brand showcase - luxury fashion marketplace"
+            },
+            {
+              src: "/image/carousel2.jpg",
+              alt: "Trillionaire Fit exclusive designs - high-end fashion"
+            },
+            {
+              src: "/image/carousel3.jpg",
+              alt: "Trillionaire Fit exclusive wears"
+            }
+          ]}
+          autoPlay={true}
+          interval={4000}
+          showDots={true}
+          showArrows={true}
+        />
       </section>
 
       <section className="space-y-6">
