@@ -2,8 +2,13 @@ import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
 
 export const runtime = 'edge';
+export const size = {
+  width: 1200,
+  height: 630,
+};
+export const contentType = 'image/png';
 
-export async function GET(request: NextRequest) {
+export default async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
     const title = searchParams.get('title') || 'Trillionaire Fit';
@@ -21,7 +26,6 @@ export async function GET(request: NextRequest) {
             alignItems: 'center',
             justifyContent: 'center',
             backgroundColor: '#ffffff',
-            backgroundImage: 'linear-gradient(45deg, #f8f9fa 0%, #ffffff 100%)',
             fontFamily: 'system-ui, sans-serif',
           }}
         >
@@ -72,8 +76,7 @@ export async function GET(request: NextRequest) {
         </div>
       ),
       {
-        width: 1200,
-        height: 630,
+        ...size,
       }
     );
   } catch (e: any) {
