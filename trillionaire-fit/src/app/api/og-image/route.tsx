@@ -51,18 +51,16 @@ export default async function GET(request: NextRequest) {
             >
               {title}
             </div>
-            {description && (
-              <div
-                style={{
-                  fontSize: '24px',
-                  color: '#666666',
-                  marginBottom: '30px',
-                  lineHeight: '1.4',
-                }}
-              >
-                {description}
-              </div>
-            )}
+            <div
+              style={{
+                fontSize: '24px',
+                color: '#666666',
+                marginBottom: '30px',
+                lineHeight: '1.4',
+              }}
+            >
+              {description}
+            </div>
             <div
               style={{
                 fontSize: '20px',
