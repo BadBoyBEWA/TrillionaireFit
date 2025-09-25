@@ -25,6 +25,7 @@ pnpm-debug.log*
 .SECURITY.md
 .GOOGLE_SEO_CHECKLIST.md
 .env.local.backup2
+.HOW_TO_ADD_PRODUCTS.md
 # Local secret config
 config/secrets.ts
 config/admin.secrets.json

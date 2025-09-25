@@ -11,6 +11,7 @@ import RecentlyViewed from '@/components/product/RecentlyViewed';
 import SocialShare from '@/components/social/SocialShare';
 import WishlistButton from '@/components/wishlist/WishlistButton';
 import { ProductStructuredData } from '@/components/seo/ProductStructuredData';
+import { ProductOpenGraph } from '@/components/seo/ProductOpenGraph';
 import { Breadcrumb } from '@/components/seo/Breadcrumb';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { recentlyViewed } from '@/lib/recently-viewed';
@@ -105,6 +106,9 @@ export default function ProductDetail({ params }: Props) {
 
   return (
     <div className="space-y-12">
+      {/* OpenGraph Meta Tags */}
+      {product && <ProductOpenGraph product={product} />}
+      
       {/* Structured Data */}
       {product && <ProductStructuredData product={product} />}
       
@@ -161,7 +165,7 @@ export default function ProductDetail({ params }: Props) {
             
             {(product.totalStock || 0) > 0 && (
               <div className="text-xs text-gray-500">
-                {product.totalStock < 10 ? '⚠️ Low stock - Order soon!' : '✅ In stock and ready to ship'}
+                {(product.totalStock || 0) < 10 ? '⚠️ Low stock - Order soon!' : '✅ In stock and ready to ship'}
               </div>
             )}
           </div>
@@ -250,15 +254,15 @@ export default function ProductDetail({ params }: Props) {
           
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row gap-3">
-              <AddToCartButton id={product._id} disabled={(product.totalStock || 0) === 0} />
+              <AddToCartButton id={product._id || ''} disabled={(product.totalStock || 0) === 0} />
             <button onClick={() => navigate('/cart')} className="btn-outline">View cart</button>
             </div>
             
             {/* Wishlist and Social Share */}
             <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-              <WishlistButton productId={product._id!} />
+              <WishlistButton productId={product._id || ''} />
               <SocialShare 
-                url={`${window.location.origin}/product/${product._id}`}
+                url={`${window.location.origin}/product/${product._id || ''}`}
                 title={product.name}
                 description={product.description}
                 image={product.images?.[0]}
@@ -273,7 +277,7 @@ export default function ProductDetail({ params }: Props) {
       </div>
 
       {/* Product Reviews */}
-      <ProductReviews productId={product._id!} />
+      <ProductReviews productId={product._id || ''} />
 
       {/* Product Recommendations */}
       <ProductRecommendations 

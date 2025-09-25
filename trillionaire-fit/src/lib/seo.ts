@@ -76,7 +76,7 @@ export function generateMetadata({
       canonical: fullUrl,
     },
     openGraph: {
-      type: type === 'product' ? 'product' : 'website',
+      type: 'website', // Always use 'website' for Next.js compatibility
       locale: 'en_US',
       url: fullUrl,
       title: fullTitle,
@@ -96,17 +96,7 @@ export function generateMetadata({
         section,
         tags,
       }),
-      ...(type === 'product' && {
-        product: {
-          price: {
-            amount: price,
-            currency,
-          },
-          availability,
-          brand,
-          category,
-        },
-      }),
+      // Note: Product-specific OpenGraph data will be handled via manual meta tags
     },
     twitter: {
       card: 'summary_large_image',
