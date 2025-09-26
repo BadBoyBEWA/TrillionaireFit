@@ -36,6 +36,11 @@ const envSchema = z.object({
   PAYSTACK_PUBLIC_KEY: z.string().optional(),
   PAYSTACK_SECRET_KEY: z.string().optional(),
   PAYSTACK_BASE_URL: z.string().url().optional(),
+  
+  // Cloudinary configuration
+  CLOUDINARY_CLOUD_NAME: z.string().optional(),
+  CLOUDINARY_API_KEY: z.string().optional(),
+  CLOUDINARY_API_SECRET: z.string().optional(),
 });
 
 // Validate environment variables
@@ -111,6 +116,9 @@ export function logEnvironmentStatus() {
     }
     if (!process.env.PAYSTACK_PUBLIC_KEY || !process.env.PAYSTACK_SECRET_KEY) {
       warnings.push('PAYSTACK_PUBLIC_KEY or PAYSTACK_SECRET_KEY not set - Paystack payment processing will not work');
+    }
+    if (!process.env.CLOUDINARY_CLOUD_NAME || !process.env.CLOUDINARY_API_KEY || !process.env.CLOUDINARY_API_SECRET) {
+      warnings.push('CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, or CLOUDINARY_API_SECRET not set - image uploads will not work');
     }
     
     if (warnings.length > 0) {

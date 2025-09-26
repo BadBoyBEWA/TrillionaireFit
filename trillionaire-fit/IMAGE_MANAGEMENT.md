@@ -1,26 +1,27 @@
 # Image Management System
 
-This document outlines the comprehensive image management system implemented for Trillionaire Fit.
+This document outlines the comprehensive image management system implemented for Trillionaire Fit using Cloudinary.
 
 ## 🖼️ Features Implemented
 
 ### ✅ 1. Image Upload Functionality
-- **Real file uploads** to server (not just data URLs)
+- **Cloudinary integration** for reliable image storage
 - **Multiple image support** (up to 10 images per product)
 - **Drag and drop** interface
 - **File validation** (type, size, format)
 - **Progress indicators** during upload
+- **FormData direct upload** (no structuredClone issues)
 
 ### ✅ 2. Image Optimization and Resizing
-- **Automatic optimization** using Sharp library
+- **Automatic optimization** using Cloudinary's transformation engine
 - **Multiple size generation**:
-  - Thumbnail: 150x150px (cover)
+  - Thumbnail: 150x150px (fill crop)
   - Small: 300x300px (fit)
   - Medium: 600x600px (fit)
   - Large: 1200x1200px (fit)
-- **Quality optimization** (85% for gallery, 80% for thumbnails)
-- **Progressive JPEG** for faster loading
-- **Format conversion** (JPEG, PNG, WebP support)
+- **Quality optimization** (auto quality detection)
+- **Format conversion** (auto format selection)
+- **Responsive image URLs** for different screen sizes
 
 ### ✅ 3. Multiple Product Images
 - **Array-based storage** in Product model
@@ -37,38 +38,43 @@ This document outlines the comprehensive image management system implemented for
 - **Loading states** and smooth transitions
 - **Image counter** display
 
-### ✅ 5. CDN Integration (Ready)
-- **CDN service utilities** prepared for future integration
+### ✅ 5. Cloudinary Integration
+- **Cloudinary service** for image storage and optimization
 - **Image transformation** URL generation
 - **Responsive image** URL generation
 - **Optimization presets** for different use cases
+- **Automatic format selection** (WebP, AVIF when supported)
+- **Global CDN delivery** for fast loading
 
 ## 🚀 Technical Implementation
 
 ### File Structure
 ```
 src/
-├── app/api/upload/image/route.ts     # Image upload API
+├── app/api/upload/cloudinary/route.ts    # Cloudinary upload API
+├── app/api/products/with-images/route.ts # Product creation with images
 ├── components/
-│   ├── ui/ImageUpload.tsx           # Upload component
-│   └── product/ProductImageGallery.tsx # Gallery component
+│   ├── ui/ImageUpload.tsx               # Upload component
+│   └── product/ProductImageGallery.tsx  # Gallery component
 ├── lib/
-│   ├── image-optimization.ts        # Optimization utilities
-│   └── cdn.ts                       # CDN integration
-└── models/Product.ts                # Product model with images array
+│   ├── cloudinary.ts                    # Cloudinary integration
+│   ├── cloudinary-optimization.ts       # Cloudinary optimization utilities
+│   ├── multer-config.ts                 # Multer configuration
+│   └── cdn.ts                           # CDN integration
+└── models/Product.ts                    # Product model with images array
 ```
 
 ### API Endpoints
 
-#### POST /api/upload/image
-Upload a single image with optimization.
+#### POST /api/upload/cloudinary
+Upload a single image to Cloudinary.
 
 **Request:**
 ```javascript
 const formData = new FormData();
 formData.append('image', file);
 
-const response = await fetch('/api/upload/image', {
+const response = await fetch('/api/upload/cloudinary', {
   method: 'POST',
   body: formData
 });
@@ -78,53 +84,74 @@ const response = await fetch('/api/upload/image', {
 ```json
 {
   "success": true,
-  "imageUrl": "/uploads/products/filename.jpg",
-  "imageUrls": {
-    "thumbnail": "/uploads/products/filename-thumbnail.jpg",
-    "small": "/uploads/products/filename-small.jpg",
-    "medium": "/uploads/products/filename-medium.jpg",
-    "large": "/uploads/products/filename-large.jpg"
+  "public_id": "trillionaire-fit/products/1234567890-abc123",
+  "secure_url": "https://res.cloudinary.com/your-cloud/image/upload/v1234567890/trillionaire-fit/products/1234567890-abc123.jpg",
+  "urls": {
+    "thumbnail": "https://res.cloudinary.com/your-cloud/image/upload/w_150,h_150,c_fill,q_auto,f_auto/trillionaire-fit/products/1234567890-abc123.jpg",
+    "small": "https://res.cloudinary.com/your-cloud/image/upload/w_300,h_300,c_fit,q_auto,f_auto/trillionaire-fit/products/1234567890-abc123.jpg",
+    "medium": "https://res.cloudinary.com/your-cloud/image/upload/w_600,h_600,c_fit,q_auto,f_auto/trillionaire-fit/products/1234567890-abc123.jpg",
+    "large": "https://res.cloudinary.com/your-cloud/image/upload/w_1200,h_1200,c_fit,q_auto,f_auto/trillionaire-fit/products/1234567890-abc123.jpg",
+    "original": "https://res.cloudinary.com/your-cloud/image/upload/q_auto,f_auto/trillionaire-fit/products/1234567890-abc123.jpg"
   },
-  "filename": "filename.jpg",
-  "size": 1024000,
-  "optimized": true
+  "width": 1920,
+  "height": 1080,
+  "format": "jpg",
+  "bytes": 1024000,
+  "created_at": "2024-01-01T00:00:00Z"
 }
 ```
 
-#### PUT /api/upload/image
-Upload multiple images with optimization.
+#### PUT /api/upload/cloudinary
+Upload multiple images to Cloudinary.
 
 **Request:**
 ```javascript
 const formData = new FormData();
 files.forEach(file => formData.append('images', file));
 
-const response = await fetch('/api/upload/image', {
+const response = await fetch('/api/upload/cloudinary', {
   method: 'PUT',
+  body: formData
+});
+```
+
+#### POST /api/products/with-images
+Create a new product with images in a single request.
+
+**Request:**
+```javascript
+const formData = new FormData();
+formData.append('name', 'Product Name');
+formData.append('price', '99.99');
+formData.append('description', 'Product description');
+// ... other text fields
+files.forEach(file => formData.append('images', file));
+
+const response = await fetch('/api/products/with-images', {
+  method: 'POST',
   body: formData
 });
 ```
 
 ### Image Optimization
 
-The system automatically generates multiple sizes for each uploaded image:
+The system automatically generates multiple sizes for each uploaded image using Cloudinary:
 
-- **Thumbnail**: 150x150px, cover crop, 80% quality
-- **Small**: 300x300px, fit inside, 85% quality
-- **Medium**: 600x600px, fit inside, 85% quality
-- **Large**: 1200x1200px, fit inside, 85% quality
+- **Thumbnail**: 150x150px, fill crop, auto quality
+- **Small**: 300x300px, fit inside, auto quality
+- **Medium**: 600x600px, fit inside, auto quality
+- **Large**: 1200x1200px, fit inside, auto quality
 
 ### File Storage
 
-Images are stored in:
+Images are stored in Cloudinary with the following structure:
 ```
-public/uploads/products/
+trillionaire-fit/products/
 ├── timestamp-random.jpg              # Original
-├── timestamp-random-thumbnail.jpg    # Thumbnail
-├── timestamp-random-small.jpg        # Small
-├── timestamp-random-medium.jpg        # Medium
-└── timestamp-random-large.jpg         # Large
+└── Generated transformations on-demand
 ```
+
+All images are served via Cloudinary's global CDN for optimal performance.
 
 ## 🎨 UI Components
 
@@ -156,8 +183,10 @@ NEXT_PUBLIC_CDN_BASE_URL=https://your-cdn.com
 CDN_API_KEY=your-api-key
 CDN_SECRET_KEY=your-secret-key
 
-# Cloudinary (alternative)
+# Cloudinary (required for image uploads)
 CLOUDINARY_CLOUD_NAME=your-cloud-name
+CLOUDINARY_API_KEY=your-api-key
+CLOUDINARY_API_SECRET=your-api-secret
 
 # AWS S3 (alternative)
 AWS_S3_BUCKET_NAME=your-bucket

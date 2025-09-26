@@ -343,38 +343,116 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
-      const submitData = {
-        ...formData,
-        images: filteredImages
-      };
-
-      console.log('🔍 Form data being submitted:', JSON.stringify(submitData, null, 2));
-      console.log('🔍 isPreowned value:', submitData.isPreowned);
-      console.log('🔍 condition value:', submitData.condition);
-      console.log('🔍 Stock structure:', JSON.stringify(submitData.stock, null, 2));
+      console.log('🔍 Form data being submitted:', JSON.stringify(formData, null, 2));
+      console.log('🔍 isPreowned value:', formData.isPreowned);
+      console.log('🔍 condition value:', formData.condition);
+      console.log('🔍 Stock structure:', JSON.stringify(formData.stock, null, 2));
       console.log('🔍 Total stock calculated:', getTotalStockFromForm());
 
-      const url = product ? `/api/products/${product._id}` : '/api/products';
-      const method = product ? 'PUT' : 'POST';
+      // For new products, use the new FormData endpoint
+      if (!product) {
+        // Create FormData for new product with images
+        const formDataToSubmit = new FormData();
+        
+        // Add text fields
+        formDataToSubmit.append('name', formData.name);
+        formDataToSubmit.append('description', formData.description);
+        formDataToSubmit.append('designer', formData.designer);
+        formDataToSubmit.append('price', formData.price.toString());
+        if (formData.originalPrice) {
+          formDataToSubmit.append('originalPrice', formData.originalPrice.toString());
+        }
+        formDataToSubmit.append('gender', formData.gender);
+        formDataToSubmit.append('category', formData.category);
+        if (formData.subcategory) {
+          formDataToSubmit.append('subcategory', formData.subcategory);
+        }
+        formDataToSubmit.append('sizes', formData.sizes.join(','));
+        formDataToSubmit.append('colors', formData.colors.join(','));
+        formDataToSubmit.append('materials', formData.materials.join(','));
+        if (formData.tags && formData.tags.length > 0) {
+          formDataToSubmit.append('tags', formData.tags.join(','));
+        }
+        formDataToSubmit.append('isActive', formData.isActive.toString());
+        formDataToSubmit.append('isFeatured', formData.isFeatured.toString());
+        formDataToSubmit.append('isOnSale', formData.isOnSale.toString());
+        formDataToSubmit.append('isPreowned', formData.isPreowned.toString());
+        if (formData.condition) {
+          formDataToSubmit.append('condition', formData.condition);
+        }
+        formDataToSubmit.append('totalStock', totalStock.toString());
+        if (formData.sku) {
+          formDataToSubmit.append('sku', formData.sku);
+        }
+        if (formData.weight) {
+          formDataToSubmit.append('weight', formData.weight.toString());
+        }
+        if (formData.dimensions) {
+          formDataToSubmit.append('dimensions', JSON.stringify(formData.dimensions));
+        }
+        if (formData.careInstructions) {
+          formDataToSubmit.append('careInstructions', formData.careInstructions);
+        }
+        if (formData.shippingInfo) {
+          formDataToSubmit.append('shippingInfo', JSON.stringify(formData.shippingInfo));
+        }
+        if (formData.seo) {
+          formDataToSubmit.append('seo', JSON.stringify(formData.seo));
+        }
 
-      // Submitting product data
+        // Add images - convert URLs to File objects if they're Cloudinary URLs
+        for (const imageUrl of filteredImages) {
+          if (imageUrl.startsWith('http')) {
+            // This is a Cloudinary URL, we need to fetch it and convert to File
+            try {
+              const response = await fetch(imageUrl);
+              const blob = await response.blob();
+              const file = new File([blob], 'image.jpg', { type: blob.type });
+              formDataToSubmit.append('images', file);
+            } catch (error) {
+              console.error('Error converting image URL to file:', error);
+              // Skip this image or handle error
+            }
+          }
+        }
 
-      const response = await fetch(url, {
-        method,
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        credentials: 'include',
-        body: JSON.stringify(submitData)
-      });
+        const response = await fetch('/api/products/with-images', {
+          method: 'POST',
+          credentials: 'include',
+          body: formDataToSubmit // Send FormData directly - no structuredClone needed
+        });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to save product');
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to create product');
+        }
+
+        onSuccess();
+        onClose();
+      } else {
+        // For existing products, use the regular JSON endpoint (images already uploaded)
+        const submitData = {
+          ...formData,
+          images: filteredImages
+        };
+
+        const response = await fetch(`/api/products/${product._id}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify(submitData)
+        });
+
+        if (!response.ok) {
+          const errorData = await response.json();
+          throw new Error(errorData.error || 'Failed to update product');
+        }
+
+        onSuccess();
+        onClose();
       }
-
-      onSuccess();
-      onClose();
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');
     } finally {

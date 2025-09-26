@@ -1,5 +1,5 @@
 // CDN Integration utilities for image optimization and delivery
-// This can be extended to integrate with services like Cloudinary, AWS CloudFront, etc.
+// Now integrated with Cloudinary for image storage and optimization
 
 export interface CDNConfig {
   baseUrl: string;
@@ -92,22 +92,30 @@ class CDNService {
   }
 
   /**
-   * Upload image to CDN (placeholder for future implementation)
+   * Upload image to CDN (now uses Cloudinary)
    */
   async uploadImage(file: File, folder?: string): Promise<string> {
-    // This would integrate with your chosen CDN service
-    // For now, return a placeholder
-    throw new Error('CDN upload not implemented yet. Use local upload instead.');
+    // This now uses Cloudinary for image uploads
+    const { uploadToCloudinary } = await import('./cloudinary');
+    const buffer = await file.arrayBuffer();
+    const result = await uploadToCloudinary(Buffer.from(buffer), {
+      folder: folder || 'trillionaire-fit/products'
+    });
+    return result.secure_url;
   }
 
   /**
-   * Delete image from CDN (placeholder for future implementation)
+   * Delete image from CDN (now uses Cloudinary)
    */
   async deleteImage(imagePath: string): Promise<boolean> {
-    // This would delete the image from your CDN
-    // For now, return true as placeholder
-    console.log(`Would delete image: ${imagePath}`);
-    return true;
+    // This now uses Cloudinary for image deletion
+    const { deleteFromCloudinary, extractPublicIdFromUrl } = await import('./cloudinary');
+    const publicId = extractPublicIdFromUrl(imagePath);
+    if (!publicId) {
+      console.error('Could not extract public ID from URL:', imagePath);
+      return false;
+    }
+    return await deleteFromCloudinary(publicId);
   }
 }
 
