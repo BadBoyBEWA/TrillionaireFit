@@ -408,7 +408,7 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
               const response = await fetch(imageUrl);
               const blob = await response.blob();
               const file = new File([blob], 'image.jpg', { type: blob.type });
-              formDataToSubmit.append('images[]', file);
+              formDataToSubmit.append('images', file);
             } catch (error) {
               console.error('Error converting image URL to file:', error);
               // Skip this image or handle error
