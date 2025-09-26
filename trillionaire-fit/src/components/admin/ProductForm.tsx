@@ -408,7 +408,7 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
               const response = await fetch(imageUrl);
               const blob = await response.blob();
               const file = new File([blob], 'image.jpg', { type: blob.type });
-              formDataToSubmit.append('images', file);
+              formDataToSubmit.append('images[]', file);
             } catch (error) {
               console.error('Error converting image URL to file:', error);
               // Skip this image or handle error
@@ -431,27 +431,27 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
         onClose();
       } else {
         // For existing products, use the regular JSON endpoint (images already uploaded)
-        const submitData = {
-          ...formData,
-          images: filteredImages
-        };
+      const submitData = {
+        ...formData,
+        images: filteredImages
+      };
 
         const response = await fetch(`/api/products/${product._id}`, {
           method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json'
-          },
-          credentials: 'include',
-          body: JSON.stringify(submitData)
-        });
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify(submitData)
+      });
 
-        if (!response.ok) {
-          const errorData = await response.json();
+      if (!response.ok) {
+        const errorData = await response.json();
           throw new Error(errorData.error || 'Failed to update product');
-        }
+      }
 
-        onSuccess();
-        onClose();
+      onSuccess();
+      onClose();
       }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'An error occurred');

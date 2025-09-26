@@ -45,8 +45,6 @@ const productSchema = z.object({
 
 // POST /api/products/with-images - Create product with images in single request
 export async function POST(request: NextRequest) {
-  const tempFilePaths: string[] = [];
-  
   try {
     console.log('🔍 POST /api/products/with-images - Starting product creation with images');
     
@@ -75,7 +73,7 @@ export async function POST(request: NextRequest) {
     console.log('✅ Text data validated:', validatedData);
 
     // Handle images
-    const imageFiles = formData.getAll('images') as File[];
+    const imageFiles = formData.getAll('images[]') as File[];
     console.log(`📁 Found ${imageFiles.length} image files`);
 
     if (imageFiles.length === 0) {
@@ -95,25 +93,34 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Upload images to Cloudinary
+    // Upload images to Cloudinary using upload_stream
     const uploadPromises = imageFiles.map(async (file) => {
-      const buffer = await file.arrayBuffer();
-      const tempFileName = `upload-${Date.now()}-${Math.round(Math.random() * 1E9)}-${file.name}`;
-      const tempFilePath = join(tmpdir(), tempFileName);
+      const buffer = Buffer.from(await file.arrayBuffer());
       
-      // Save temporarily
-      await writeFile(tempFilePath, Buffer.from(buffer));
-      tempFilePaths.push(tempFilePath);
-      
-      // Upload to Cloudinary
-      const result = await cloudinary.uploader.upload(tempFilePath, {
-        folder: 'trillionaire-fit/products',
-        resource_type: 'image',
-        use_filename: true,
-        unique_filename: true
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          {
+            folder: 'trillionaire-fit/products',
+            resource_type: 'image',
+            use_filename: true,
+            unique_filename: true
+          },
+          (error, result) => {
+            if (error) {
+              console.error('Cloudinary upload error:', error);
+              console.error('Error details:', JSON.stringify(error, null, 2));
+              reject(new Error(`Cloudinary upload failed: ${error.message}`));
+            } else if (result) {
+              console.log('Cloudinary upload successful:', result.public_id);
+              resolve(result);
+            } else {
+              reject(new Error('No result from Cloudinary upload'));
+            }
+          }
+        );
+        
+        uploadStream.end(buffer);
       });
-      
-      return result;
     });
 
     const cloudinaryResults = await Promise.all(uploadPromises);
@@ -238,15 +245,5 @@ export async function POST(request: NextRequest) {
       { error: 'Failed to create product' },
       { status: 500 }
     );
-  } finally {
-    // Clean up temporary files
-    for (const tempFilePath of tempFilePaths) {
-      try {
-        await unlink(tempFilePath);
-        console.log('🧹 Cleaned up temporary file:', tempFilePath);
-      } catch (error) {
-        console.error('Error cleaning up temporary file:', error);
-      }
-    }
   }
 }

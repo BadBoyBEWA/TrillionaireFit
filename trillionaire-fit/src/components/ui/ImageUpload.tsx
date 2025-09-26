@@ -64,11 +64,11 @@ export default function ImageUpload({
       // Upload files to Cloudinary - send FormData directly without cloning
       const formData = new FormData();
       files.forEach(file => {
-        formData.append('images', file);
+        formData.append('images[]', file); // Use images[] for multiple files
       });
 
       const response = await fetch('/api/upload/cloudinary', {
-        method: 'PUT',
+        method: 'POST',
         body: formData, // Send FormData directly - no structuredClone needed
       });
 
@@ -79,9 +79,17 @@ export default function ImageUpload({
 
       const result = await response.json();
       
-      if (result.success && result.images) {
-        // Use the secure_url from Cloudinary
-        const newImageUrls = result.images.map((img: any) => img.secure_url);
+      if (result.success) {
+        // Handle both single and multiple image responses
+        let newImageUrls: string[] = [];
+        if (result.url) {
+          // Single image response
+          newImageUrls = [result.url];
+        } else if (result.urls) {
+          // Multiple images response
+          newImageUrls = result.urls;
+        }
+        
         onImagesChange([...images, ...newImageUrls]);
       } else {
         throw new Error('Upload failed');
