@@ -1,29 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import multer from 'multer';
-import cloudinary from '@/lib/cloudinary-config';
+import { NextResponse } from 'next/server';
+import { v2 as cloudinary } from 'cloudinary';
 
-// Configure multer for memory storage
-const upload = multer({
-  storage: multer.memoryStorage(),
-  fileFilter: (req, file, cb) => {
-    if (file.mimetype.startsWith('image/')) {
-      cb(null, true);
-    } else {
-      cb(new Error('Only image files are allowed!'));
-    }
-  },
-  limits: {
-    fileSize: 10 * 1024 * 1024, // 10MB limit
-    files: 10 // Maximum 10 files
-  }
-});
-
-// Disable Next.js body parser for this route
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
+// Configure Cloudinary (auto-reads CLOUDINARY_URL)
+cloudinary.config({ secure: true });
 
 // Helper function to upload buffer to Cloudinary
 async function uploadBufferToCloudinary(buffer, folder = 'uploads') {
@@ -33,95 +12,94 @@ async function uploadBufferToCloudinary(buffer, folder = 'uploads') {
         folder: `trillionaire-fit/${folder}`,
         resource_type: 'image',
         use_filename: true,
-        unique_filename: true
+        unique_filename: true,
       },
       (error, result) => {
         if (error) {
-          console.error('❌ Cloudinary upload failed:', error.message, error.stack);
+          console.error('❌ Cloudinary upload error:', error);
           reject(new Error(`Cloudinary upload failed: ${error.message}`));
         } else if (result) {
-          console.log('✅ Cloudinary upload success:', result);
+          console.log('✅ Cloudinary upload success:', result.public_id);
           resolve(result.secure_url);
         } else {
           reject(new Error('No result from Cloudinary upload'));
         }
       }
     );
-    
     uploadStream.end(buffer);
   });
 }
 
-// POST /api/upload/cloudinary - Upload images to Cloudinary
+// POST /api/upload/cloudinary
 export async function POST(request) {
   try {
-    console.log('🔍 POST /api/upload/cloudinary - Starting image upload');
-    
-    // Parse form data
-    const formData = await request.formData();
-    
-    // Log all keys in formData
-    console.log("formData keys:", [...formData.keys()]);
-    
-    // Get all files
-    const files = formData.getAll('images');
-    
-    if (!files || files.length === 0) {
-      return NextResponse.json({ error: 'No image files provided' }, { status: 400 });
-    }
+    console.log('🔍 POST /api/upload/cloudinary - Starting file upload');
 
-    console.log(`📁 Processing ${files.length} files`);
+    const contentType = request.headers.get('content-type');
+    let files = [];
 
-    // Log file details for each file
-    for (const file of files) {
-      if (file) {
-        console.log("Incoming file:", {
-          name: file.name,
-          type: file.type,
-          size: file.size,
-        });
-      } else {
-        console.error("⚠ No file found in formData");
+    if (contentType && contentType.includes('multipart/form-data')) {
+      const formData = await request.formData();
+
+      // Support both `file` and `images`
+      const file = formData.get('file');
+      const images = formData.getAll('images');
+
+      if (file) files.push(file);
+      if (images && images.length > 0) files = [...files, ...images];
+
+      console.log('📁 formData keys:', [...formData.keys()]);
+      console.log(`📸 Received ${files.length} file(s)`);
+
+      if (files.length === 0) {
+        return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
-    }
 
-    // Validate all files
-    for (const file of files) {
-      if (!file.type.startsWith('image/')) {
-        return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
+      // Validate files
+      for (const f of files) {
+        console.log('➡ Incoming file:', { name: f.name, type: f.type, size: f.size });
+        if (!f.type.startsWith('image/')) {
+          return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
+        }
+        if (f.size > 10 * 1024 * 1024) {
+          return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
+        }
       }
-      if (file.size > 10 * 1024 * 1024) {
-        return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
-      }
-    }
 
-    // Upload all files to Cloudinary
-    const uploadPromises = files.map(async (file) => {
-      const buffer = Buffer.from(await file.arrayBuffer());
+      // Upload all files
+      const uploadPromises = files.map(async (f) => {
+        const buffer = Buffer.from(await f.arrayBuffer());
+        return uploadBufferToCloudinary(buffer, 'uploads');
+      });
+
+      const urls = await Promise.all(uploadPromises);
+      console.log(`✅ Uploaded ${urls.length} image(s) to Cloudinary`);
+
+      return NextResponse.json({ success: true, urls });
+    } else {
+      // Handle base64 upload
+      const body = await request.json();
+      const base64String = body.file;
+
+      if (!base64String) {
+        return NextResponse.json({ error: 'No file provided' }, { status: 400 });
+      }
+
+      console.log('📁 Received base64 string:', {
+        length: base64String.length,
+        preview: base64String.substring(0, 50) + '...',
+      });
+
+      const base64Data = base64String.replace(/^data:image\/[a-z]+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
       const secureUrl = await uploadBufferToCloudinary(buffer, 'uploads');
-      return secureUrl;
-    });
 
-    const urls = await Promise.all(uploadPromises);
-    console.log(`✅ ${urls.length} images uploaded to Cloudinary`);
-
-    return NextResponse.json({
-      success: true,
-      urls: urls
-    });
-
-  } catch (error) {
-    console.error('❌ Cloudinary upload failed:', error.message, error.stack);
-    
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
+      return NextResponse.json({ success: true, urls: [secureUrl] });
     }
-
+  } catch (error) {
+    console.error('❌ Upload failed:', error);
     return NextResponse.json(
-      { error: 'Failed to upload images' },
+      { error: error instanceof Error ? error.message : 'Failed to upload file' },
       { status: 500 }
     );
   }

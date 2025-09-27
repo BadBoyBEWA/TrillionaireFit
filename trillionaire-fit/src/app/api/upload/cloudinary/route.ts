@@ -1,13 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { v2 as cloudinary } from 'cloudinary';
 
-// Configure Cloudinary
-cloudinary.config({
-  secure: true
-});
-// Cloudinary should auto-read CLOUDINARY_URL from process.env
+// Configure Cloudinary (auto-reads CLOUDINARY_URL)
+cloudinary.config({ secure: true });
 
-// Helper function to upload buffer to Cloudinary using upload_stream
+// Helper function to upload buffer to Cloudinary
 async function uploadBufferToCloudinary(buffer: Buffer, folder: string = 'uploads'): Promise<string> {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
@@ -15,136 +12,95 @@ async function uploadBufferToCloudinary(buffer: Buffer, folder: string = 'upload
         folder: `trillionaire-fit/${folder}`,
         resource_type: 'image',
         use_filename: true,
-        unique_filename: true
+        unique_filename: true,
       },
       (error, result) => {
         if (error) {
-          console.error('Cloudinary upload error:', error);
-          console.error('Error details:', JSON.stringify(error, null, 2));
+          console.error('❌ Cloudinary upload error:', error);
           reject(new Error(`Cloudinary upload failed: ${error.message}`));
         } else if (result) {
-          console.log('Cloudinary upload successful:', result.public_id);
+          console.log('✅ Cloudinary upload success:', result.public_id);
           resolve(result.secure_url);
         } else {
           reject(new Error('No result from Cloudinary upload'));
         }
       }
     );
-    
     uploadStream.end(buffer);
   });
 }
 
-// POST /api/upload/cloudinary - Upload file to Cloudinary
+// POST /api/upload/cloudinary
 export async function POST(request: NextRequest) {
   try {
     console.log('🔍 POST /api/upload/cloudinary - Starting file upload');
-    
+
     const contentType = request.headers.get('content-type');
-    let fileBuffer: Buffer;
-    let file: File | string | null = null;
-    
+    let files: File[] = [];
+
     if (contentType && contentType.includes('multipart/form-data')) {
-      // Handle FormData upload
       const formData = await request.formData();
-      file = formData.get('file') as File;
-      
-      if (!file) {
+
+      // Support both `file` and `images`
+      const file = formData.get('file') as File | null;
+      const images = formData.getAll('images') as File[];
+
+      if (file) files.push(file);
+      if (images && images.length > 0) files = [...files, ...images];
+
+      console.log('📁 formData keys:', [...formData.keys()]);
+      console.log(`📸 Received ${files.length} file(s)`);
+
+      if (files.length === 0) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
-      
-      // Log file information for debugging
-      console.log('📁 Received FormData file:', {
-        fileName: file.name,
-        fileType: file.type,
-        fileSize: file.size
+
+      // Validate files
+      for (const f of files) {
+        console.log('➡ Incoming file:', { name: f.name, type: f.type, size: f.size });
+        if (!f.type.startsWith('image/')) {
+          return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
+        }
+        if (f.size > 10 * 1024 * 1024) {
+          return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
+        }
+      }
+
+      // Upload all files
+      const uploadPromises = files.map(async (f) => {
+        const buffer = Buffer.from(await f.arrayBuffer());
+        return uploadBufferToCloudinary(buffer, 'uploads');
       });
-      
-      if (!file.type.startsWith('image/')) {
-        return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
-      }
-      
-      if (file.size > 10 * 1024 * 1024) {
-        return NextResponse.json({ error: 'File size must be less than 10MB' }, { status: 400 });
-      }
-      
-      fileBuffer = Buffer.from(await file.arrayBuffer());
+
+      const urls = await Promise.all(uploadPromises);
+      console.log(`✅ Uploaded ${urls.length} image(s) to Cloudinary`);
+
+      return NextResponse.json({ success: true, urls });
     } else {
-      // Handle base64 string upload
+      // Handle base64 upload
       const body = await request.json();
-      file = body.file;
-      
-      if (!file) {
+      const base64String = body.file;
+
+      if (!base64String) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
-      
-      // Log base64 string information for debugging
+
       console.log('📁 Received base64 string:', {
-        stringLength: file.length,
-        isDataUrl: file.startsWith('data:'),
-        preview: file.substring(0, 50) + '...'
+        length: base64String.length,
+        preview: base64String.substring(0, 50) + '...',
       });
-      
-      // Remove data URL prefix if present
-      const base64Data = file.replace(/^data:image\/[a-z]+;base64,/, '');
-      fileBuffer = Buffer.from(base64Data, 'base64');
+
+      const base64Data = base64String.replace(/^data:image\/[a-z]+;base64,/, '');
+      const buffer = Buffer.from(base64Data, 'base64');
+      const secureUrl = await uploadBufferToCloudinary(buffer, 'uploads');
+
+      return NextResponse.json({ success: true, urls: [secureUrl] });
     }
-
-    // Log incoming upload details
-    console.log("Incoming upload:", {
-      hasFile: !!file,
-      fileType: typeof file,
-      preview: typeof file === "string" ? file.substring(0, 50) + "..." : null
-    });
-
-    console.log('📁 Processing file upload');
-
-    // Upload file to Cloudinary
-    const secureUrl = await uploadBufferToCloudinary(fileBuffer, 'uploads');
-    
-    // Log Cloudinary response
-    console.log("Cloudinary upload result:", {
-      secure_url: secureUrl,
-      success: true
-    });
-    
-    console.log('✅ File uploaded to Cloudinary');
-
-    // Return the secure URL
-    return NextResponse.json({
-      secure_url: secureUrl
-    });
-
   } catch (error) {
-    console.error('❌ Cloudinary upload error:', error);
-    
-    if (error instanceof Error) {
-      return NextResponse.json(
-        { error: error.message },
-        { status: 500 }
-      );
-    }
-
+    console.error('❌ Upload failed:', error);
     return NextResponse.json(
-      { error: 'Failed to upload file' },
+      { error: error instanceof Error ? error.message : 'Failed to upload file' },
       { status: 500 }
     );
   }
-}
-
-// Handle other HTTP methods
-export async function GET() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
-}
-
-export async function PUT() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
-}
-
-export async function DELETE() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
-}
-
-export async function PATCH() {
-  return NextResponse.json({ error: 'Method not allowed' }, { status: 405 });
 }
