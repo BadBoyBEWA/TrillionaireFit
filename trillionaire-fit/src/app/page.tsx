@@ -19,15 +19,21 @@ export default function HomePage() {
 
   useEffect(() => {
     const fetchFeaturedProducts = async () => {
+      console.log('🔄 Fetching featured products...');
       try {
         const response = await fetch('/api/products?isFeatured=true&isActive=true&limit=8');
+        console.log('📡 Response status:', response.status);
         if (response.ok) {
           const data = await response.json();
+          console.log('📦 Products data:', data);
           setFeaturedProducts(data.products);
+        } else {
+          console.error('❌ Response not ok:', response.status);
         }
       } catch (error) {
-        console.error('Failed to fetch featured products:', error);
+        console.error('❌ Failed to fetch featured products:', error);
       } finally {
+        console.log('✅ Setting loading to false');
         setLoading(false);
       }
     };

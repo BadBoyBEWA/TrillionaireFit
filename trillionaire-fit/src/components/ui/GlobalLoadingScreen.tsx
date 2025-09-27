@@ -5,6 +5,8 @@ import { useLoading } from '@/contexts/LoadingContext';
 export function GlobalLoadingScreen() {
   const { isLoading } = useLoading();
 
+  console.log('🔍 GlobalLoadingScreen - isLoading:', isLoading);
+
   if (!isLoading) return null;
 
   return (

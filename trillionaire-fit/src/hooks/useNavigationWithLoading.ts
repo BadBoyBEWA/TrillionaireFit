@@ -20,10 +20,13 @@ export function useNavigationWithLoading() {
 
   // Reset loading state when component mounts (navigation completed)
   useEffect(() => {
-    // Add a minimum delay to make loading more visible
+    // Reset loading immediately on mount
+    setLoading(false);
+    
+    // Add a minimum delay to make loading more visible for navigation
     const timer = setTimeout(() => {
       setLoading(false);
-    }, 800); // 800ms delay
+    }, 100); // Reduced delay
 
     return () => clearTimeout(timer);
   }, [setLoading]);

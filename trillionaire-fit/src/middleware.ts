@@ -24,9 +24,14 @@ export function middleware(request: NextRequest) {
   response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
   
   // Content Security Policy
+  const isDevelopment = process.env.NODE_ENV === 'development';
+  const scriptSrc = isDevelopment 
+    ? "'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com"
+    : "'self' https://js.stripe.com";
+    
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https://api.stripe.com https://res.cloudinary.com; frame-src 'self' https://js.stripe.com;"
+    `default-src 'self'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https://api.stripe.com https://res.cloudinary.com; frame-src 'self' https://js.stripe.com;`
   );
   
   // Referrer Policy
