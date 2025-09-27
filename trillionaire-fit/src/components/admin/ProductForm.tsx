@@ -408,7 +408,7 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
               const response = await fetch(imageUrl);
               const blob = await response.blob();
               const file = new File([blob], 'image.jpg', { type: blob.type });
-              formDataToSubmit.append('images', file);
+              formDataToSubmit.append('images[]', file);
             } catch (error) {
               console.error('Error converting image URL to file:', error);
               // Skip this image or handle error
@@ -602,13 +602,14 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
 
               <div>
                 <label className="block text-sm font-medium text-black mb-2">
-                  SKU
+                  SKU *
                 </label>
                 <input
                   type="text"
                   value={formData.sku || ''}
                   onChange={(e) => handleInputChange('sku', e.target.value.toUpperCase())}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
+                  required
                 />
               </div>
             </div>

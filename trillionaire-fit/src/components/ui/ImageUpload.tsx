@@ -1,13 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Upload, X, FileImage, Loader2 } from "lucide-react";
 
-export default function ImageUpload() {
+interface ImageUploadProps {
+  images?: string[];
+  onImagesChange?: (images: string[]) => void;
+  maxImages?: number;
+  onError?: (error: string) => void;
+}
+
+export default function ImageUpload({ 
+  images = [], 
+  onImagesChange, 
+  maxImages = 10, 
+  onError 
+}: ImageUploadProps) {
   const [files, setFiles] = useState<File[]>([]);
   const [previewUrls, setPreviewUrls] = useState<string[]>([]);
-  const [uploadedUrls, setUploadedUrls] = useState<string[]>([]);
+  const [uploadedUrls, setUploadedUrls] = useState<string[]>(images);
   const [loading, setLoading] = useState(false);
+
+  // Sync uploadedUrls with images prop
+  useEffect(() => {
+    setUploadedUrls(images);
+  }, [images]);
 
   // Convert FormData -> plain object for debugging (removed structuredClone)
   function toCloneableData(formData: FormData) {
@@ -73,13 +90,23 @@ export default function ImageUpload() {
       const urls = await Promise.all(uploadPromises);
       setUploadedUrls(urls.filter(Boolean)); // Filter out any null/undefined URLs
       
+      // Notify parent component of uploaded URLs
+      if (onImagesChange) {
+        onImagesChange(urls.filter(Boolean));
+      }
+      
       // Clear the form after successful upload
       setFiles([]);
       setPreviewUrls([]);
       
     } catch (err: any) {
       console.error("Upload error:", err.message);
-      alert(`Upload failed: ${err.message}`);
+      const errorMessage = `Upload failed: ${err.message}`;
+      if (onError) {
+        onError(errorMessage);
+      } else {
+        alert(errorMessage);
+      }
     } finally {
       setLoading(false);
     }
@@ -90,6 +117,15 @@ export default function ImageUpload() {
     previewUrls.forEach(url => URL.revokeObjectURL(url));
     setFiles([]);
     setPreviewUrls([]);
+  };
+
+  // Remove uploaded image
+  const removeUploadedImage = (index: number) => {
+    const newUrls = uploadedUrls.filter((_, i) => i !== index);
+    setUploadedUrls(newUrls);
+    if (onImagesChange) {
+      onImagesChange(newUrls);
+    }
   };
 
   return (
@@ -208,7 +244,7 @@ export default function ImageUpload() {
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
               {uploadedUrls.map((url, idx) => (
-                <div key={idx} className="group">
+                <div key={idx} className="group relative">
                   <div className="aspect-square rounded-lg overflow-hidden bg-gray-100 border-2 border-green-200">
                     <img
                       src={url}
@@ -216,6 +252,12 @@ export default function ImageUpload() {
                       className="w-full h-full object-cover"
                     />
                   </div>
+                  <button
+                    onClick={() => removeUploadedImage(idx)}
+                    className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <X className="w-4 h-4" />
+                  </button>
                   <div className="mt-2 text-xs text-gray-500">
                     <a 
                       href={url} 

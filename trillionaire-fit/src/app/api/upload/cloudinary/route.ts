@@ -30,25 +30,21 @@ export async function POST(request: NextRequest) {
   try {
     const formData = await request.formData();
 
-    // ✅ grab ALL files with key "file"
-    const files = formData.getAll("file") as File[];
+    // Handle single file upload (for individual requests)
+    const file = formData.get("file") as File;
 
-    if (files.length === 0) {
+    if (!file) {
       return NextResponse.json(
-        { error: "No files provided" },
+        { error: "No file provided" },
         { status: 400 }
       );
     }
 
-    // ✅ upload all files concurrently
-    const urls = await Promise.all(
-      files.map(async (f) => {
-        const buffer = Buffer.from(await f.arrayBuffer());
-        return uploadBufferToCloudinary(buffer, "uploads");
-      })
-    );
+    // Upload single file
+    const buffer = Buffer.from(await file.arrayBuffer());
+    const url = await uploadBufferToCloudinary(buffer, "uploads");
 
-    return NextResponse.json({ success: true, urls });
+    return NextResponse.json({ success: true, url }); // Return single URL
   } catch (error: any) {
     console.error("Upload failed:", error);
     return NextResponse.json(
