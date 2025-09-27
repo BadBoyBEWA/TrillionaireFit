@@ -16,14 +16,14 @@ export default function ImageUpload() {
     const selectedFiles = Array.from(e.target.files);
     setFiles(selectedFiles);
 
-    // Show local preview first
+    // Show local previews
     const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
     setPreviews(previewUrls);
     setUploadedUrls([]); // reset Cloudinary links
     setError(null);
   };
 
-  // Handle upload to backend
+  // Handle upload
   const handleUpload = async () => {
     if (files.length === 0) {
       setError("Please select at least one file.");
@@ -34,7 +34,8 @@ export default function ImageUpload() {
     setError(null);
 
     const formData = new FormData();
-    files.forEach((file) => formData.append("files", file));
+    // Always append with "file"
+    files.forEach((file) => formData.append("file", file));
 
     try {
       const res = await fetch("/api/upload/cloudinary", {
@@ -48,9 +49,8 @@ export default function ImageUpload() {
         throw new Error(data.error || "Upload failed");
       }
 
-      // Replace previews with Cloudinary URLs
       setUploadedUrls(data.urls);
-      setPreviews([]); // clear local previews after success
+      setPreviews([]); // clear previews once uploaded
     } catch (err: any) {
       console.error("Upload error:", err);
       setError(err.message || "Something went wrong");
@@ -78,10 +78,9 @@ export default function ImageUpload() {
         {loading ? "Uploading..." : "Upload"}
       </button>
 
-      {/* Show error */}
       {error && <p className="text-red-600">{error}</p>}
 
-      {/* Show previews (before upload) */}
+      {/* Previews before upload */}
       {previews.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {previews.map((src, idx) => (
@@ -95,7 +94,7 @@ export default function ImageUpload() {
         </div>
       )}
 
-      {/* Show uploaded Cloudinary images */}
+      {/* Uploaded Cloudinary images */}
       {uploadedUrls.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {uploadedUrls.map((url, idx) => (
