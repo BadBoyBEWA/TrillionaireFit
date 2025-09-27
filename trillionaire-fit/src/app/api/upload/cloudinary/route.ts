@@ -42,15 +42,23 @@ export async function POST(request: NextRequest) {
     
     const contentType = request.headers.get('content-type');
     let fileBuffer: Buffer;
+    let file: File | string | null = null;
     
     if (contentType && contentType.includes('multipart/form-data')) {
       // Handle FormData upload
       const formData = await request.formData();
-      const file = formData.get('file') as File;
+      file = formData.get('file') as File;
       
       if (!file) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
+      
+      // Log file information for debugging
+      console.log('📁 Received FormData file:', {
+        fileName: file.name,
+        fileType: file.type,
+        fileSize: file.size
+      });
       
       if (!file.type.startsWith('image/')) {
         return NextResponse.json({ error: 'Only image files are allowed' }, { status: 400 });
@@ -64,21 +72,42 @@ export async function POST(request: NextRequest) {
     } else {
       // Handle base64 string upload
       const body = await request.json();
-      const base64String = body.file;
+      file = body.file;
       
-      if (!base64String) {
+      if (!file) {
         return NextResponse.json({ error: 'No file provided' }, { status: 400 });
       }
       
+      // Log base64 string information for debugging
+      console.log('📁 Received base64 string:', {
+        stringLength: file.length,
+        isDataUrl: file.startsWith('data:'),
+        preview: file.substring(0, 50) + '...'
+      });
+      
       // Remove data URL prefix if present
-      const base64Data = base64String.replace(/^data:image\/[a-z]+;base64,/, '');
+      const base64Data = file.replace(/^data:image\/[a-z]+;base64,/, '');
       fileBuffer = Buffer.from(base64Data, 'base64');
     }
+
+    // Log incoming upload details
+    console.log("Incoming upload:", {
+      hasFile: !!file,
+      fileType: typeof file,
+      preview: typeof file === "string" ? file.substring(0, 50) + "..." : null
+    });
 
     console.log('📁 Processing file upload');
 
     // Upload file to Cloudinary
     const secureUrl = await uploadBufferToCloudinary(fileBuffer, 'uploads');
+    
+    // Log Cloudinary response
+    console.log("Cloudinary upload result:", {
+      secure_url: secureUrl,
+      success: true
+    });
+    
     console.log('✅ File uploaded to Cloudinary');
 
     // Return the secure URL
