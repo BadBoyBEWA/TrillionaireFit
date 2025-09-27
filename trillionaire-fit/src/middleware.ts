@@ -26,7 +26,7 @@ export function middleware(request: NextRequest) {
   // Content Security Policy
   response.headers.set(
     'Content-Security-Policy',
-    "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; connect-src 'self' https://api.stripe.com; frame-src 'self' https://js.stripe.com; img-src 'self' data: https:; style-src 'self' 'unsafe-inline';"
+    "default-src 'self'; script-src 'self' https://js.stripe.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https: blob:; connect-src 'self' https://api.stripe.com https://res.cloudinary.com; frame-src 'self' https://js.stripe.com;"
   );
   
   // Referrer Policy
