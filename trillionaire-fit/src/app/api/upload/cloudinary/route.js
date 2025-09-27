@@ -26,7 +26,7 @@ export const config = {
 };
 
 // Helper function to upload buffer to Cloudinary
-async function uploadBufferToCloudinary(buffer, folder = 'products') {
+async function uploadBufferToCloudinary(buffer, folder = 'uploads') {
   return new Promise((resolve, reject) => {
     const uploadStream = cloudinary.uploader.upload_stream(
       {
@@ -37,11 +37,10 @@ async function uploadBufferToCloudinary(buffer, folder = 'products') {
       },
       (error, result) => {
         if (error) {
-          console.error('❌ Cloudinary upload error:', error);
-          console.error('Error details:', JSON.stringify(error, null, 2));
+          console.error('❌ Cloudinary upload failed:', error.message, error.stack);
           reject(new Error(`Cloudinary upload failed: ${error.message}`));
         } else if (result) {
-          console.log('✅ Cloudinary upload successful:', result.public_id);
+          console.log('✅ Cloudinary upload success:', result);
           resolve(result.secure_url);
         } else {
           reject(new Error('No result from Cloudinary upload'));
@@ -61,6 +60,9 @@ export async function POST(request) {
     // Parse form data
     const formData = await request.formData();
     
+    // Log all keys in formData
+    console.log("formData keys:", [...formData.keys()]);
+    
     // Get all files
     const files = formData.getAll('images');
     
@@ -69,6 +71,19 @@ export async function POST(request) {
     }
 
     console.log(`📁 Processing ${files.length} files`);
+
+    // Log file details for each file
+    for (const file of files) {
+      if (file) {
+        console.log("Incoming file:", {
+          name: file.name,
+          type: file.type,
+          size: file.size,
+        });
+      } else {
+        console.error("⚠ No file found in formData");
+      }
+    }
 
     // Validate all files
     for (const file of files) {
@@ -83,7 +98,7 @@ export async function POST(request) {
     // Upload all files to Cloudinary
     const uploadPromises = files.map(async (file) => {
       const buffer = Buffer.from(await file.arrayBuffer());
-      const secureUrl = await uploadBufferToCloudinary(buffer, 'products');
+      const secureUrl = await uploadBufferToCloudinary(buffer, 'uploads');
       return secureUrl;
     });
 
@@ -96,7 +111,7 @@ export async function POST(request) {
     });
 
   } catch (error) {
-    console.error('❌ Upload error:', error);
+    console.error('❌ Cloudinary upload failed:', error.message, error.stack);
     
     if (error instanceof Error) {
       return NextResponse.json(
