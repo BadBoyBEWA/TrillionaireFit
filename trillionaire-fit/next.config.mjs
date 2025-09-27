@@ -39,9 +39,9 @@ const nextConfig = {
             value: `
               default-src 'self';
               script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com;
-              connect-src 'self' https://api.stripe.com;
+              connect-src 'self' https://api.stripe.com https://res.cloudinary.com;
               frame-src 'self' https://js.stripe.com;
-              img-src 'self' data: https:;
+              img-src 'self' data: https: blob:;
               style-src 'self' 'unsafe-inline';
             `.replace(/\s{2,}/g, " ").trim(),
           },
