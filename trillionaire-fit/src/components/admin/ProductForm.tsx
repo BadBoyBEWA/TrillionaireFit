@@ -343,7 +343,7 @@ export default function ProductForm({ product, onClose, onSuccess }: ProductForm
         await new Promise(resolve => setTimeout(resolve, 100));
       }
 
-      console.log('🔍 Form data being submitted:', JSON.stringify(formData, null, 2));
+      console.log('🔍 Form data being submitted (FormData object)');
       console.log('🔍 isPreowned value:', formData.isPreowned);
       console.log('🔍 condition value:', formData.condition);
       console.log('🔍 Stock structure:', JSON.stringify(formData.stock, null, 2));
