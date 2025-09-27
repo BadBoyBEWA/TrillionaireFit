@@ -16,14 +16,13 @@ export default function ImageUpload() {
     const selectedFiles = Array.from(e.target.files);
     setFiles(selectedFiles);
 
-    // Show local previews
     const previewUrls = selectedFiles.map((file) => URL.createObjectURL(file));
     setPreviews(previewUrls);
-    setUploadedUrls([]); // reset Cloudinary links
+    setUploadedUrls([]);
     setError(null);
   };
 
-  // Handle upload
+  // Handle upload to backend
   const handleUpload = async () => {
     if (files.length === 0) {
       setError("Please select at least one file.");
@@ -34,8 +33,7 @@ export default function ImageUpload() {
     setError(null);
 
     const formData = new FormData();
-    // Always append with "file"
-    files.forEach((file) => formData.append("file", file));
+    files.forEach((file) => formData.append("file", file)); // Always append as "file"
 
     try {
       const res = await fetch("/api/upload/cloudinary", {
@@ -45,12 +43,10 @@ export default function ImageUpload() {
 
       const data = await res.json();
 
-      if (!res.ok || !data.success) {
-        throw new Error(data.error || "Upload failed");
-      }
+      if (!res.ok || !data.success) throw new Error(data.error || "Upload failed");
 
       setUploadedUrls(data.urls);
-      setPreviews([]); // clear previews once uploaded
+      setPreviews([]); // clear local previews after success
     } catch (err: any) {
       console.error("Upload error:", err);
       setError(err.message || "Something went wrong");
@@ -63,12 +59,7 @@ export default function ImageUpload() {
     <div className="p-4 border rounded-lg max-w-md mx-auto space-y-4">
       <h2 className="text-lg font-semibold">Upload Images</h2>
 
-      <input
-        type="file"
-        multiple
-        onChange={handleFileChange}
-        className="block w-full"
-      />
+      <input type="file" multiple onChange={handleFileChange} className="block w-full" />
 
       <button
         onClick={handleUpload}
@@ -80,30 +71,20 @@ export default function ImageUpload() {
 
       {error && <p className="text-red-600">{error}</p>}
 
-      {/* Previews before upload */}
+      {/* Previews */}
       {previews.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {previews.map((src, idx) => (
-            <img
-              key={idx}
-              src={src}
-              alt={`preview-${idx}`}
-              className="w-full h-32 object-cover rounded-lg"
-            />
+            <img key={idx} src={src} alt={`preview-${idx}`} className="w-full h-32 object-cover rounded-lg" />
           ))}
         </div>
       )}
 
-      {/* Uploaded Cloudinary images */}
+      {/* Uploaded images */}
       {uploadedUrls.length > 0 && (
         <div className="grid grid-cols-2 gap-2">
           {uploadedUrls.map((url, idx) => (
-            <img
-              key={idx}
-              src={url}
-              alt={`uploaded-${idx}`}
-              className="w-full h-32 object-cover rounded-lg border-2 border-green-500"
-            />
+            <img key={idx} src={url} alt={`uploaded-${idx}`} className="w-full h-32 object-cover rounded-lg border-2 border-green-500" />
           ))}
         </div>
       )}

@@ -1,53 +1,38 @@
-import { NextResponse } from 'next/server';
-import type { NextRequest } from 'next/server';
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-export function middleware(request: NextRequest) {
-  const response = NextResponse.next();
+export function middleware(req: NextRequest) {
+  const res = NextResponse.next();
+  const isDev = process.env.NODE_ENV === "development";
 
-  // Log CSP info only in dev
-  if (process.env.NODE_ENV === 'development') {
-    console.log('🔒 CSP Headers applied via src/middleware.ts');
-    console.log('📝 CSP Policy includes Stripe domains for secure payment processing');
-  }
+  // Security headers
+  res.headers.set("X-Frame-Options", "DENY");
+  res.headers.set("X-Content-Type-Options", "nosniff");
+  res.headers.set("X-XSS-Protection", "1; mode=block");
+  res.headers.set("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  res.headers.set("Referrer-Policy", "strict-origin-when-cross-origin");
+  res.headers.set("Permissions-Policy", "camera=(), microphone=(), geolocation=()");
 
-  // Prevent clickjacking
-  response.headers.set('X-Frame-Options', 'DENY');
-
-  // Prevent MIME type sniffing
-  response.headers.set('X-Content-Type-Options', 'nosniff');
-
-  // Enable XSS protection
-  response.headers.set('X-XSS-Protection', '1; mode=block');
-
-  // Strict Transport Security (HTTPS only)
-  response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
-
-  // CSP (allow inline scripts in both dev & prod)
-  const scriptSrc = "'self' 'unsafe-eval' 'unsafe-inline' https://js.stripe.com";
-
-  response.headers.set(
-    'Content-Security-Policy',
-    [
-      "default-src 'self'",
-      `script-src ${scriptSrc}`,
-      "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: https: blob:",
-      "connect-src 'self' https://api.stripe.com https://res.cloudinary.com",
-      "frame-src 'self' https://js.stripe.com"
-    ].join('; ')
+  // CSP
+  const scriptSrc = isDev ? "'self' 'unsafe-eval'" : "'self'";
+  res.headers.set(
+    "Content-Security-Policy",
+    `
+      default-src 'self';
+      script-src ${scriptSrc} https://js.stripe.com;
+      style-src 'self' 'unsafe-inline';
+      img-src 'self' data: blob: https: https://res.cloudinary.com;
+      connect-src 'self' https://api.stripe.com https://res.cloudinary.com https://api.cloudinary.com;
+      frame-src 'self' https://js.stripe.com;
+      media-src 'self' https://res.cloudinary.com;
+    `.replace(/\s{2,}/g, " ") // clean whitespace
   );
 
-  // Referrer Policy
-  response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  if (isDev) console.log("🔒 CSP headers applied");
 
-  // Permissions Policy
-  response.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
-
-  return response;
+  return res;
 }
 
 export const config = {
-  matcher: [
-    '/((?!api|_next/static|_next/image|favicon.ico).*)',
-  ],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
