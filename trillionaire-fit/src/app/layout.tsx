@@ -6,7 +6,7 @@ import { Footer } from '@/components/layout/Footer';
 import { CartProvider } from '@/components/cart/CartProvider';
 import { LoadingProvider } from '@/contexts/LoadingContext';
 import { GlobalLoadingScreen } from '@/components/ui/GlobalLoadingScreen';
-import { Marquee } from '@/components/layout/Marquee';
+import { MarqueeText } from '@/components/ui/Marquee';
 import { AuthProvider } from "@/context/AuthContext";
 import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
 import { generateMetadata as generateSEOMetadata } from '@/lib/seo';
@@ -104,7 +104,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <CartProvider>
                 <GlobalLoadingScreen />
                 <Navbar />
-                <Marquee text="Store coming soon" />
+                <div className="bg-black text-white py-2">
+                  <MarqueeText text= "We accept Payment in CryptoCurrency just contact us on whatsapp To get your order" />
+                </div>
                 <main className="container-responsive py-8">
                   {children}
                 </main>

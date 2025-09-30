@@ -1,45 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import { useState, useEffect } from 'react';
-import { ProductCard } from '@/components/product/ProductCard';
 import { Carousel } from '@/components/ui/Carousel';
+import PaginatedProductGrid from '@/components/product/PaginatedProductGrid';
+import { MarqueeText, MarqueeAnnouncement } from '@/components/ui/Marquee';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
 import { useAuth } from '@/context/AuthContext';
-import { Product } from '@/lib/types';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 export default function HomePage() {
-  const [featuredProducts, setFeaturedProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);
   const { navigate } = useNavigationWithLoading();
   const { user, logout } = useAuth();
-
-  useEffect(() => {
-    const fetchFeaturedProducts = async () => {
-      console.log('🔄 Fetching featured products...');
-      try {
-        const response = await fetch('/api/products?isFeatured=true&isActive=true&limit=8');
-        console.log('📡 Response status:', response.status);
-        if (response.ok) {
-          const data = await response.json();
-          console.log('📦 Products data:', data);
-          setFeaturedProducts(data.products);
-        } else {
-          console.error('❌ Response not ok:', response.status);
-        }
-      } catch (error) {
-        console.error('❌ Failed to fetch featured products:', error);
-      } finally {
-        console.log('✅ Setting loading to false');
-        setLoading(false);
-      }
-    };
-
-    fetchFeaturedProducts();
-  }, []);
 
   const handleLogout = async () => {
     await logout();
@@ -71,11 +44,7 @@ export default function HomePage() {
                   Logout
                 </button>
               </div>
-            ) : (
-              <p className="text-black-600 font-luxury-elegant">
-                <a href="/login" className="underline">Login here</a>
-              </p>
-            )}
+            ) : null}
 
             <div className="flex gap-3">
               {/* <button onClick={() => navigate('/women')} className="btn-primary">Shop Women</button> */}
@@ -110,30 +79,89 @@ export default function HomePage() {
         />
       </section>
 
-      <section className="space-y-6">
-        <h2 className="text-2xl font-luxury-heading">Featured Luxury Designer Products</h2>
-        {loading ? (
-          <div className="flex items-center justify-center h-64">
-            <div className="animate-spin rounded-full h-12 w-12 border-2 border-black border-t-transparent"></div>
+      {/* Featured Products Section with Pagination */}
+      <PaginatedProductGrid
+        title="Featured Luxury Designer Products"
+        fetchUrl="/api/products?isFeatured=true&isActive=true"
+        productsPerPage={8}
+        showNavigation={true}
+        showPagination={true}
+      />
+
+      {/* Stylish Men's Shop Section */}
+      <section className="py-8">
+        <button 
+          onClick={() => navigate('/men')}
+          className="w-full group relative overflow-hidden rounded-lg bg-gradient-to-br from-slate-50 to-gray-100 hover:from-slate-100 hover:to-gray-200 transition-all duration-500 hover:shadow-xl"
+        >
+          <div className="grid grid-cols-1 md:grid-cols-2 min-h-[300px]">
+            {/* Left Side - Text */}
+            <div className="flex flex-col justify-center p-8 md:p-12 text-left">
+              <div className="space-y-4">
+                <h2 className="text-4xl md:text-5xl font-luxury-display font-bold text-gray-900 leading-tight">
+                  <span className="block">Shop</span>
+                  <span className="block text-gray-700">Men</span>
+                </h2>
+                <p className="text-lg text-gray-600 font-luxury-elegant max-w-sm">
+                  Discover our exclusive collection of luxury menswear from the world's most coveted designers
+                </p>
+                <div className="pt-4">
+                  <span className="inline-flex items-center text-sm font-medium text-gray-800 group-hover:text-black transition-colors">
+                    Explore Collection
+                    <svg className="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                    </svg>
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            {/* Right Side - Image Placeholder */}
+            <div className="relative bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center overflow-hidden">
+              <div className="absolute inset-0 bg-gradient-to-br from-black/10 to-transparent"></div>
+              <div className="relative z-10 text-center p-8">
+                <div className="w-32 h-32 md:w-40 md:h-40 bg-white/80 rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform duration-500">
+                  <svg className="w-16 h-16 md:w-20 md:h-20 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                  </svg>
+                </div>
+                <p className="mt-4 text-sm font-medium text-gray-700 font-luxury-elegant">
+                  Premium Menswear
+                </p>
+              </div>
+              
+              {/* Decorative Elements */}
+              <div className="absolute top-4 right-4 w-20 h-20 bg-white/20 rounded-full blur-xl group-hover:bg-white/30 transition-colors"></div>
+              <div className="absolute bottom-4 left-4 w-16 h-16 bg-white/15 rounded-full blur-lg group-hover:bg-white/25 transition-colors"></div>
+            </div>
           </div>
-        ) : featuredProducts.length === 0 ? (
-          <div className="text-center text-gray-600">
-            <p className="font-luxury-body">No featured products available at the moment.</p>
-          </div>
-        ) : (
-          <div className="grid grid-cols-2 gap-4 sm:gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
-            {featuredProducts.map((product) => (
-              <ProductCard 
-                key={product._id || product.id} 
-                product={{
-                  ...product,
-                  id: product._id || product.id || '',
-                  imageUrl: product.images?.[0] || product.imageUrl || '/api/placeholder/400/400'
-                }} 
-              />
-            ))}
-          </div>
-        )}
+          
+          {/* Hover Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-r from-black/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
+        </button>
+      </section>
+
+      {/* Marquee Examples */}
+      <section className="py-8 space-y-6">
+        {/* <h3 className="text-xl font-semibold text-center">Marquee Examples</h3> */}
+        
+        {/* Text Marquee */}
+        {/* <div className="bg-black text-white py-4 rounded-lg">
+          <MarqueeText text="✨ New Arrivals Every Week ✨ Free Shipping on Orders Over ₦50,000 ✨ Exclusive Designer Collections ✨" />
+        </div> */}
+        
+        {/* Announcement Marquee */}
+        {/* <div className="bg-gray-100 py-3 rounded-lg">
+          <MarqueeAnnouncement 
+            announcements={[
+              "Free Shipping Nationwide",
+              "New Collection Available",
+              "Limited Time Offers",
+              "Premium Quality Guaranteed",
+              "Exclusive Designer Pieces"
+            ]} 
+          />
+        </div> */}
       </section>
 
       {/* SEO Content Sections */}

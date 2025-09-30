@@ -10,11 +10,15 @@ export function useNavigationWithLoading() {
 
   const navigate = (path: string) => {
     setLoading(true);
+    // Scroll to top before navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     router.push(path as any);
   };
 
   const navigateBack = () => {
     setLoading(true);
+    // Scroll to top before navigation
+    window.scrollTo({ top: 0, behavior: 'smooth' });
     router.back();
   };
 
