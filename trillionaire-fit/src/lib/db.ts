@@ -12,7 +12,7 @@ interface DatabaseConfig {
 
 // Get database configuration - always use MONGODB_URI for Atlas connection
 const getDatabaseConfig = (): DatabaseConfig => {
-  const mongoUri = process.env.MONGODB_URI;
+  const mongoUri = process.env.MONGODB;
   
   if (!mongoUri) {
     throw new Error('MONGODB_URI environment variable is required');
