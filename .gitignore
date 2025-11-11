@@ -1,0 +1,42 @@
+# Dependencies
+node_modules
+
+# Next.js build output
+.next
+out
+dist
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+pnpm-debug.log*
+
+# OS
+.DS_Store
+
+# Env files (secrets)
+.env.local
+.env.local.backup
+.env.development.local
+.env.test.local
+.env.production.local
+.TODO.md
+.PAYSTACK_SETUP.md
+.SECURITY.md
+.GOOGLE_SEO_CHECKLIST.md
+.env.local.backup2
+.HOW_TO_ADD_PRODUCTS.md
+# Local secret config
+config/secrets.ts
+config/admin.secrets.json
+
+
+# Ignore MongoDB files if ever copied here
+WiredTiger*
+*.wt
+*.bson
+*.lock
+_mdb_catalog.*
+journal/
+diagnostic.data/
+storage.bson
