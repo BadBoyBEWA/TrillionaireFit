@@ -5,7 +5,6 @@ import Image from 'next/image';
 
 interface CarouselItem {
   src: string;
-  alt: string;
   title?: string;
   description?: string;
 }
@@ -59,7 +58,6 @@ export function Carousel({
       <div className="relative aspect-[4/5] w-full">
         <Image
           src={items[currentIndex].src}
-          alt={items[currentIndex].alt}
           fill
           className="object-cover transition-opacity duration-500"
           priority={currentIndex === 0}

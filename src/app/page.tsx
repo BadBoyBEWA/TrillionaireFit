@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { Carousel } from "@/components/ui/Carousel";
 import PaginatedProductGrid from '@/components/product/PaginatedProductGrid';
 import { MarqueeText, MarqueeAnnouncement } from '@/components/ui/Marquee';
 import { useNavigationWithLoading } from '@/hooks/useNavigationWithLoading';
@@ -53,7 +54,7 @@ export default function HomePage() {
         </div>
 
         <div className="relative w-full h-full">
-          <video
+          {/* <video
             className="w-full h-full rounded-lg object-cover"
             src="/image/tf_video.mp4"
             poster="/image/TF_Logo_1.jpg"
@@ -62,7 +63,28 @@ export default function HomePage() {
             loop
             playsInline
             controls
-          />
+          /> */}
+          <Carousel items={[
+              {
+                src: "/image/men1.jpg",
+              },
+              {
+                src: "/image/men2.jpg",
+              },
+              {
+                src: "/image/men3.jpg",
+              },
+              {
+                src: "/image/men5.jpg"
+              },
+              {
+                src: "/image/men6.jpg",
+              },
+              {
+                src: "/image/men4.jpg",
+              },
+
+              ]} autoPlay={true} interval={4000} showDots={true} showArrows={true} />
         </div>
       </section>
 

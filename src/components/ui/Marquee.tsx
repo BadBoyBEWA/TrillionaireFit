@@ -40,7 +40,7 @@ export default function Marquee({
 // Example usage components
 export function MarqueeText({ text, className = '' }: { text: string; className?: string }) {
   return (
-    <Marquee speed={30} className={className}>
+    <Marquee speed={50} className={className}>
       <span className="italic">{text}</span>
     </Marquee>
   );
