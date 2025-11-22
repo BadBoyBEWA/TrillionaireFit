@@ -129,7 +129,7 @@ export default function HomePage() {
             <div
               className="relative overflow-hidden min-h-[300px] md:min-h-full"
               style={{
-                backgroundImage: "url('/image/tf_men.jpg')",
+                backgroundImage: "url('/image/bg.jpg')",
                 backgroundSize: 'cover',
                 backgroundPosition: 'center',
               }}
