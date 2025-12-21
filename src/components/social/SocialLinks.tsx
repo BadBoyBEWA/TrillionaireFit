@@ -5,7 +5,8 @@ import {
   TwitterIcon,
   InstagramIcon,
   YoutubeIcon,
-  EnvelopeIcon
+  EnvelopeIcon,
+  TiktokIcon
 } from '@heroicons/react/24/outline';
 
 interface SocialLinksProps {
@@ -44,6 +45,12 @@ const socialLinks = [
     icon: EnvelopeIcon,
     url: 'mailto:info@trillionairefit.com',
     color: 'hover:text-gray-600'
+  },
+  {
+    name: 'Tiktok',
+    icon: TiktokIcon,
+    url: 'https://tiktok.com/@trillionairefit',
+    color: 'hover:text-black'
   }
 ];
 

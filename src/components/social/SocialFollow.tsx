@@ -1,6 +1,6 @@
 'use client';
 
-import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, WhatsAppIcon } from '@/components/ui/SocialIcons';
+import { FacebookIcon, InstagramIcon, TwitterIcon, YoutubeIcon, WhatsAppIcon, TiktokIcon } from '@/components/ui/SocialIcons';
 
 interface SocialFollowProps {
   className?: string;
@@ -37,6 +37,12 @@ export default function SocialFollow({ className = '' }: SocialFollowProps) {
       url: 'https://wa.link/ejkgxf',
       color: 'hover:text-red-600',
       icon: WhatsAppIcon
+    },
+    {
+      name: 'Tiktok',
+      url: 'https://tiktok.com/@trillionairefit',
+      color: 'hover:text-black',
+      icon: TiktokIcon
     }
   ];
 

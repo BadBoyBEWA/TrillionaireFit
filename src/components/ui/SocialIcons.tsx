@@ -16,6 +16,12 @@ export const TwitterIcon = ({ className = "h-5 w-5" }: IconProps) => (
   </svg>
 );
 
+export const TiktokIcon = ({ className = "h-5 w-5" }: IconProps) => (
+  <svg className={className} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+    <path d="M17.5 1c.9 2.2 2.6 3.9 4.5 4.5v3.1c-1.8-.1-3.5-.6-5-1.5v7.1c0 4-3.3 7.3-7.3 7.3S2.4 18.2 2.4 14.2c0-4 3.3-7.3 7.3-7.3.4 0 .8 0 1.2.1v3.4c-.4-.1-.8-.2-1.2-.2-2.1 0-3.9 1.8-3.9 4s1.8 4 3.9 4 3.9-1.8 3.9-4V1h3.9z" />
+  </svg>
+);
+
 export const InstagramIcon = ({ className = "h-6 w-6" }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
